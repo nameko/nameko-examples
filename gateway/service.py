@@ -10,13 +10,13 @@ class OrderNotFound(Exception):
 
 
 class Gateway(object):
-
+    """
+    Service acts as a gateway to allow access to our other service over http.
+    """
     name = 'gateway'
 
-    """
-    Service acts as a gateway and allows access to our other service over http.
+    # TODO - config dependency
 
-    """
     orders_rpc = RpcProxy('orders')
     products_rpc = RpcProxy('products')
 
@@ -32,13 +32,27 @@ class Gateway(object):
     @http("GET", "/orders/<int:order_id>", expected_exceptions=OrderNotFound)
     def get_order(self, request, order_id):
         """
-        Get the order details for order given by `order_id`
+        Get the order details for order given by `order_id`.
+        Also asynchronously collects product details for the order from the
+        product service.
         """
         try:
             order = self.orders_rpc.get_order(order_id)
         except RemoteError:
-            # should we show error handling? (as this isn't very good!)
+            # TODO - should we show error handling here?
+            # (this isn't a great example!)
             raise OrderNotFound('Order id {}'.format(order_id))
+
+        # make async calls to products service.
+        product_results = [
+            self.products_rpc.get_product.call_async(product_id)
+            for product_id in order['product_ids']
+        ]
+
+        # modify the order dict to include product details
+        order['products'] = [result.result() for result in product_results]
+
+        # TODO - prepend configured domain name to product images.
 
         return Response(json.dumps(order), mimetype='application/json')
 
