@@ -1,14 +1,14 @@
 from orders.models import Order, OrderDetail
 
 
-def test_can_create_order(session):
+def test_can_create_order(db_session):
     order = Order()
-    session.add(order)
-    session.commit()
+    db_session.add(order)
+    db_session.commit()
     assert order.id > 0
 
 
-def test_can_create_order_detail(session):
+def test_can_create_order_detail(db_session):
     order = Order()
     order_detail_1 = OrderDetail(
         order=order,
@@ -23,8 +23,8 @@ def test_can_create_order_detail(session):
         quantity=2
     )
 
-    session.add_all([order_detail_1, order_detail_2])
-    session.commit()
+    db_session.add_all([order_detail_1, order_detail_2])
+    db_session.commit()
 
     assert order.id > 0
     for order_detail in order.order_details:

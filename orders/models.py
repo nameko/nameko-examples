@@ -19,23 +19,17 @@ class Base(object):
         onupdate=datetime.datetime.utcnow,
         nullable=False
     )
-    deleted_at = Column(DateTime, nullable=True)
 
-    def delete(self):
-        if self.deleted_at is None:
-            self.deleted_at = datetime.datetime.utcnow()
+DeclarativeBase = declarative_base(cls=Base)
 
 
-Base = declarative_base(cls=Base)
-
-
-class Order(Base):
+class Order(DeclarativeBase):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True)
 
 
-class OrderDetail(Base):
+class OrderDetail(DeclarativeBase):
     __tablename__ = "order_details"
 
     id = Column(Integer, primary_key=True)

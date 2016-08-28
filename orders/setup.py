@@ -7,8 +7,9 @@ setup(
     description='Store and serve orders',
     install_requires=[
         'nameko==2.3.1',
-        'nameko-sqlalchemy==0.0.2',
+        'nameko-sqlalchemy==0.0.3',
         'alembic==0.8.7',
+        'marshmallow==2.9.1'
     ],
     extras_require={
         'dev': [
