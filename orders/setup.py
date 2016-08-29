@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(
     name='nameko-examples-orders',
@@ -14,7 +14,8 @@ setup(
     extras_require={
         'dev': [
             'pytest==2.9.2',
-            'coverage==4.2'
+            'coverage==4.2',
+            'flake8==3.0.4'
         ],
     },
     zip_safe=True
