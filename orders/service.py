@@ -1,3 +1,4 @@
+from nameko.events import EventDispatcher
 from nameko.rpc import rpc
 from nameko_sqlalchemy import DatabaseSession
 
@@ -10,6 +11,7 @@ class OrdersService:
 
     db = DatabaseSession(DeclarativeBase)
     order_schema = OrderSchema()
+    event_dispatcher = EventDispatcher()
 
     @rpc
     def get_order(self, order_id):
@@ -30,7 +32,14 @@ class OrdersService:
         )
         self.db.add(order)
         self.db.commit()
-        return self.order_schema.dump(order).data
+
+        order = self.order_schema.dump(order).data
+
+        self.event_dispatcher('order_created', {
+            'order': order,
+        })
+
+        return order
 
     @rpc
     def update_order(self, order):

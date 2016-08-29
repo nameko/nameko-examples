@@ -12,5 +12,4 @@ def db_url():
 @pytest.fixture(scope="session")
 def model_base():
     """Overriding model_base fixture from nameko_sqlalchemy"""
-
     return DeclarativeBase

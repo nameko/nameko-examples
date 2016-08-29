@@ -1,5 +1,6 @@
 import pytest
 
+from mock import call
 from orders.models import Order, OrderDetail
 from orders.schemas import OrderSchema, OrderDetailSchema
 
@@ -28,7 +29,7 @@ def test_get_order(orders_rpc, order):
 
 
 @pytest.mark.usefixtures('db_session')
-def test_can_create_order(orders_rpc):
+def test_can_create_order(container, orders_rpc):
     order_details = [
         {
             'product_id': 1,
@@ -46,6 +47,14 @@ def test_can_create_order(orders_rpc):
     )
     assert new_order['id'] > 0
     assert len(new_order['order_details']) == len(order_details)
+    assert [call(
+        'order_created', {'order': {
+            'id': 1,
+            'order_details': [
+                {'price': '99.99', 'product_id': 1, 'id': 1, 'quantity': 99},
+                {'price': '5.99', 'product_id': 2, 'id': 2, 'quantity': 5}
+            ]}}
+    )] == container.event_dispatcher.call_args_list
 
 
 @pytest.mark.usefixtures('db_session', 'order_details')
