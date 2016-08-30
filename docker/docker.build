@@ -3,7 +3,7 @@ FROM nameko-example-base
 RUN apt-get update && \
     apt-get install -qyy \
     -o APT::Install-Recommends=false -o APT::Install-Suggests=false \
-    build-essential python3-dev libpq-dev python-psycopg2 && \
+    build-essential python3-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

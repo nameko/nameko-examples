@@ -4,17 +4,15 @@ services:
     container_name: rabbit
     image: rabbitmq:3.6-management
     ports:
-        # management plugin port, use RABBITMQ_DEFAULT_USER to log in
-        - "15673:15672"
-        # regular rabbit port, to enable access from the outside
-        - "5673:5672"
+        - "15672:15672"
+        - "5672:5672"
     restart: always
 
   postgres:
     container_name: postgres
     image: postgres
     ports:
-        - "5433:5432"
+        - "5432:5432"
     environment:
         POSTGRES_PASSWORD: "password"
         POSTGRES_USER: "postgres"
@@ -31,4 +29,8 @@ services:
     links:
         - "rabbit:rabbit"
         - "postgres:postgres"
-
+    environment:
+        DB_PASSWORD: "password"
+        DB_USER: "postgres"
+        RABBIT_PASSWORD: "guest"
+        RABBIT_USER: "guest"

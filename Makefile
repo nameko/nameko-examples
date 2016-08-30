@@ -26,10 +26,6 @@ build-wheel-builder: build-example-base
 run-wheel-builder: build-wheel-builder
 	for image in $(IMAGES) ; do make -C $$image run-wheel-builder; done
 
-#build-image-base: run-wheel-builder
-#	docker build -t nameko-example-base \
-#	-f docker/docker.run .;
-
 build-images: run-wheel-builder
 	for image in $(IMAGES) ; do make -C $$image build-image; done
 
