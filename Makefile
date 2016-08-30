@@ -1,10 +1,11 @@
-IMAGES := orders
+HTMLCOV_DIR ?= htmlcov
 
+IMAGES := orders
 
 # test
 
 coverage-html:
-	coverage html --fail-under 100
+	coverage html -d $(HTMLCOV_DIR) --fail-under 100
 
 coverage-report:
 	coverage report -m
