@@ -1,4 +1,4 @@
-from orders.models import Order, OrderDetail
+from models import Order, OrderDetail
 
 
 def test_can_create_order(db_session):

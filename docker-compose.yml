@@ -1,0 +1,34 @@
+version: '2'
+services:
+  rabbit:
+    container_name: rabbit
+    image: rabbitmq:3.6-management
+    ports:
+        # management plugin port, use RABBITMQ_DEFAULT_USER to log in
+        - "15673:15672"
+        # regular rabbit port, to enable access from the outside
+        - "5673:5672"
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    ports:
+        - "5433:5432"
+    environment:
+        POSTGRES_PASSWORD: "password"
+        POSTGRES_USER: "postgres"
+    restart: always
+
+  orders:
+    container_name: orders
+    image: nameko/nameko-example-orders:latest
+    depends_on:
+      - rabbit
+      - postgres
+    ports:
+        - "8001:8000"
+    links:
+        - "rabbit:rabbit"
+        - "postgres:postgres"
+

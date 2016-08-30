@@ -1,0 +1,4 @@
+DB_URIS:
+    "orders:Base": "postgresql://postgres:password@postgres/orders"
+
+AMQP_URI: "amqp://guest:guest@rabbit:5672/"
