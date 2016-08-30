@@ -2,8 +2,8 @@ from nameko.events import EventDispatcher
 from nameko.rpc import rpc
 from nameko_sqlalchemy import DatabaseSession
 
-from models import DeclarativeBase, Order, OrderDetail
-from schemas import OrderSchema
+from orders.models import DeclarativeBase, Order, OrderDetail
+from orders.schemas import OrderSchema
 
 
 class OrdersService:

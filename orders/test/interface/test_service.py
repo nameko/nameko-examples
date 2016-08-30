@@ -2,8 +2,8 @@ import pytest
 
 from mock import call
 
-from models import Order, OrderDetail
-from schemas import OrderSchema, OrderDetailSchema
+from orders.models import Order, OrderDetail
+from orders.schemas import OrderSchema, OrderDetailSchema
 
 
 @pytest.fixture

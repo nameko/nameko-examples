@@ -4,16 +4,17 @@ services:
     container_name: rabbit
     image: rabbitmq:3.6-management
     ports:
-        - "15672:15672"
-        - "5672:5672"
+        - "15673:15672"
+        - "5673:5672"
     restart: always
 
   postgres:
     container_name: postgres
     image: postgres
     ports:
-        - "5432:5432"
+        - "5433:5432"
     environment:
+        POSTGRES_DB: "orders"
         POSTGRES_PASSWORD: "password"
         POSTGRES_USER: "postgres"
     restart: always

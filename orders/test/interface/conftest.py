@@ -4,7 +4,7 @@ from collections import namedtuple
 from nameko.standalone.rpc import ServiceRpcProxy
 from nameko.testing.services import replace_dependencies
 
-from service import OrdersService
+from orders.service import OrdersService
 
 
 @pytest.fixture

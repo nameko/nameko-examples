@@ -1,8 +1,9 @@
 #!/bin/bash
 
+# Check if rabbit is up and running before starting the service.
+
 is_ready() {
-    # TODO: Use creds from env vars.
-    eval "curl -I $RABBIT_USER:$RABBIT_PASSWORD http://rabbit:15672/api/vhosts"
+    eval "curl -I ${RABBIT_USER}:${RABBIT_PASSWORD} http://rabbit:15672/api/vhosts"
 }
 
 i=0
@@ -16,4 +17,10 @@ while ! is_ready; do
     sleep 3
 done
 
-nameko run --config config.yml service --backdoor 3000
+# Run Migrations
+
+alembic upgrade head
+
+# Run Service
+
+nameko run --config config.yml orders.service --backdoor 3000
