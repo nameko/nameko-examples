@@ -8,7 +8,7 @@ setup(
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=[
         'nameko==2.3.1',
-        'nameko-sqlalchemy==0.0.3',
+        'nameko-sqlalchemy==0.0.4',
         'alembic==0.8.7',
         'marshmallow==2.9.1',
         'psycopg2==2.6.2',
