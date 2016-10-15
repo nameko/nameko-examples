@@ -1,4 +1,5 @@
 from __future__ import with_statement
+import os
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
@@ -26,6 +27,19 @@ target_metadata = DeclarativeBase.metadata
 # ... etc.
 
 
+def get_url():
+    return (
+        "postgresql://{db_user}:{db_pass}@{db_host}:"
+        "{db_port}/{db_name}"
+    ).format(
+        db_user=os.getenv("DB_USER", "postgres"),
+        db_pass=os.getenv("DB_PASSWORD", "password"),
+        db_host=os.getenv("DB_HOST", "localhost"),
+        db_port=os.getenv("DB_PORT", "5432"),
+        db_name=os.getenv("DB_NAME", "orders"),
+    )
+
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
@@ -38,7 +52,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = get_url()
     context.configure(
         url=url, target_metadata=target_metadata, literal_binds=True)
 
