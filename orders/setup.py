@@ -7,7 +7,7 @@ setup(
     description='Store and serve orders',
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=[
-        'nameko==2.3.1',
+        'nameko==2.4.2',
         'nameko-sqlalchemy==0.0.4',
         'alembic==0.8.7',
         'marshmallow==2.9.1',

@@ -1,18 +1,17 @@
 version: "2"
 services:
   rabbit:
-    container_name: rabbit
+    container_name: rabbitmq
     image: rabbitmq:3.6-management
     ports:
-        - "15673:15672"
-        - "5673:5672"
+        - "15673:15672" # Exposing RabbitMQ web management on different port for convenience
     restart: always
 
   postgres:
-    container_name: postgres
+    container_name: postgres_db
     image: postgres
     ports:
-        - "5433:5432"
+        - "5433:5432" # Exposing Postgres on different port for convenience
     environment:
         POSTGRES_DB: "orders"
         POSTGRES_PASSWORD: "password"
@@ -33,5 +32,9 @@ services:
     environment:
         DB_PASSWORD: "password"
         DB_USER: "postgres"
+        DB_HOST: "postgres"
+        DB_NAME: "orders"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
+        RABBIT_HOST: "rabbit"
+        RABBIT_PORT: "15672"

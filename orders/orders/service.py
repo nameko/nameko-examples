@@ -10,13 +10,12 @@ class OrdersService:
     name = 'orders'
 
     db = DatabaseSession(DeclarativeBase)
-    order_schema = OrderSchema()
     event_dispatcher = EventDispatcher()
 
     @rpc
     def get_order(self, order_id):
         order = self.db.query(Order).get(order_id)
-        return self.order_schema.dump(order).data
+        return OrderSchema().dump(order).data
 
     @rpc
     def create_order(self, order_details):
@@ -33,7 +32,7 @@ class OrdersService:
         self.db.add(order)
         self.db.commit()
 
-        order = self.order_schema.dump(order).data
+        order = OrderSchema().dump(order).data
 
         self.event_dispatcher('order_created', {
             'order': order,
@@ -55,7 +54,7 @@ class OrdersService:
             order_detail.quantity = order_details[order_detail.id]['quantity']
 
         self.db.commit()
-        return self.order_schema.dump(order).data
+        return OrderSchema().dump(order).data
 
     @rpc
     def delete_order(self, order_id):

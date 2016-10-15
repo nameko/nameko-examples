@@ -3,7 +3,7 @@
 # Check if rabbit is up and running before starting the service.
 
 is_ready() {
-    eval "curl -I ${RABBIT_USER}:${RABBIT_PASSWORD} http://rabbit:15672/api/vhosts"
+    eval "curl -I ${RABBIT_USER}:${RABBIT_PASSWORD} http://${RABBIT_HOST}:${RABBIT_PORT}/api/vhosts"
 }
 
 i=0
@@ -23,4 +23,4 @@ alembic upgrade head
 
 # Run Service
 
-nameko run --config config.yml orders.service --backdoor 3000
+nameko run --config config.yml orders.service

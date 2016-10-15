@@ -30,7 +30,7 @@ def test_get_order(orders_rpc, order):
 
 
 @pytest.mark.usefixtures('db_session')
-def test_can_create_order(container, orders_rpc):
+def test_can_create_order(orders_service, orders_rpc):
     order_details = [
         {
             'product_id': 1,
@@ -55,7 +55,7 @@ def test_can_create_order(container, orders_rpc):
                 {'price': '99.99', 'product_id': 1, 'id': 1, 'quantity': 99},
                 {'price': '5.99', 'product_id': 2, 'id': 2, 'quantity': 5}
             ]}}
-    )] == container.event_dispatcher.call_args_list
+    )] == orders_service.event_dispatcher.call_args_list
 
 
 @pytest.mark.usefixtures('db_session', 'order_details')

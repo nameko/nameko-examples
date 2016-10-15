@@ -20,6 +20,8 @@ def upgrade():
     op.create_table(
         "orders",
         sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id")
     )
 
@@ -30,6 +32,8 @@ def upgrade():
         sa.Column("product_id", sa.Integer(), nullable=False),
         sa.Column("price", sa.DECIMAL(18, 2), nullable=False),
         sa.Column("quantity", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(
             ["order_id"], ["orders.id"],
