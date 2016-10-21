@@ -1,14 +1,14 @@
 version: "2"
 services:
   rabbit:
-    container_name: rabbitmq
+    container_name: nameko-example-rabbitmq
     image: rabbitmq:3.6-management
     ports:
         - "15673:15672" # Exposing RabbitMQ web management on different port for convenience
     restart: always
 
   postgres:
-    container_name: postgres_db
+    container_name: nameko-example-postgres
     image: postgres
     ports:
         - "5433:5432" # Exposing Postgres on different port for convenience
@@ -19,7 +19,7 @@ services:
     restart: always
 
   orders:
-    container_name: orders
+    container_name: nameko-example-orders
     image: nameko/nameko-example-orders:latest
     depends_on:
       - rabbit
@@ -27,8 +27,8 @@ services:
     ports:
         - "8001:8000"
     links:
-        - "rabbit:rabbit"
-        - "postgres:postgres"
+        - "rabbit:nameko-example-rabbitmq"
+        - "postgres:nameko-example-postgres"
     environment:
         DB_PASSWORD: "password"
         DB_USER: "postgres"

@@ -82,8 +82,7 @@ def orders_service(create_service_meta):
     return create_service_meta('event_dispatcher')
 
 
-# @pytest.mark.usefixtures('orders_service')
-@pytest.yield_fixture
+@pytest.fixture
 def orders_rpc(config, orders_service):
     """ Fixture used for triggering real RPC entrypoints on Orders service """
     with ServiceRpcProxy('orders', config) as proxy:
