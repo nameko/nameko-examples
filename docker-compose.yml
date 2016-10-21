@@ -37,4 +37,5 @@ services:
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"
-        RABBIT_PORT: "15672"
+        RABBIT_PORT: "5672"
+        RABBIT_MANAGEMENT_PORT: "15672"
