@@ -1,0 +1,23 @@
+FROM nameko-example-base
+
+RUN apt-get update && \
+    apt-get install -qyy \
+    -o APT::Install-Recommends=false -o APT::Install-Suggests=false \
+    build-essential python3-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN . /appenv/bin/activate; \
+    pip install wheel
+
+
+ENV WHEELHOUSE=/wheelhouse
+ENV PIP_WHEEL_DIR=/wheelhouse
+ENV PIP_FIND_LINKS=/wheelhouse
+
+VOLUME /wheelhouse
+VOLUME /application
+
+CMD . /appenv/bin/activate; \
+           cd /application; \
+           pip wheel .

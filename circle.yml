@@ -1,0 +1,19 @@
+machine:
+  python:
+    version: 3.4.3
+  services:
+    - docker
+    - rabbitmq-server
+  pre:
+    - sudo rabbitmq-plugins enable rabbitmq_management
+
+dependencies:
+  pre:
+    - pip install -U pip wheel setuptools
+    - cd orders; pip install -U .[dev]
+
+test:
+  override:
+    - HTMLCOV_DIR=$CIRCLE_ARTIFACTS make coverage
+  post:
+    - make build
