@@ -3,7 +3,7 @@
 # Check if rabbit is up and running before starting the service.
 
 is_ready() {
-    eval "curl -I ${RABBIT_USER}:${RABBIT_PASSWORD} http://${RABBIT_HOST}:${RABBIT_MANAGEMENT_PORT}/api/vhosts"
+    eval "curl -I http://${RABBIT_USER}:${RABBIT_PASSWORD}@${RABBIT_HOST}:${RABBIT_MANAGEMENT_PORT}/api/vhosts"
 }
 
 i=0
