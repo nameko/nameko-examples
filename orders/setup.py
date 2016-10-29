@@ -11,7 +11,8 @@ setup(
         'nameko-sqlalchemy==0.0.4',
         'alembic==0.8.7',
         'marshmallow==2.9.1',
-        'psycopg2==2.6.2'
+        'psycopg2==2.6.2',
+        'kombu==3.0.37'
     ],
     extras_require={
         'dev': [
