@@ -4,6 +4,7 @@ machine:
   services:
     - docker
     - rabbitmq-server
+    - redis
   pre:
     - sudo rabbitmq-plugins enable rabbitmq_management
 
