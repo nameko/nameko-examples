@@ -11,6 +11,7 @@ setup(
     py_modules=['products'],
     install_requires=[
         "nameko>=2.4.2",
+        "redis==2.10.5",
     ],
     extras_require={
         'dev': [
