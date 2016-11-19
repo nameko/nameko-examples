@@ -14,7 +14,7 @@ class StorageWrapper:
     """
     Product storage
 
-    A very simple Nameko dependency example. This is a simplified
+    A very simple example of a custom Nameko dependency. Simplified
     implementation of products database based on Redis key value store.
     Holding the product ID increments or keeping sorted sets of product
     names for ordering the products is out of the scope of this example.
