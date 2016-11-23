@@ -35,5 +35,3 @@ class ProductsService:
         for product in payload['order']['order_details']:
             left_in_stock = self.storage.decrement_stock(
                 product['product_id'], product['quantity'])
-            if left_in_stock <= 0:
-                dispatch_event('product out of stock')
