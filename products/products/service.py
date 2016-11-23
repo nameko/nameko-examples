@@ -1,7 +1,7 @@
 import logging
 
-from nameko.rpc import rpc, RpcProxy
 from nameko.events import event_handler
+from nameko.rpc import rpc
 
 from products import dependencies, schemas
 
@@ -33,5 +33,5 @@ class ProductsService:
     @event_handler('orders', 'order_created')
     def handle_order_created(self, payload):
         for product in payload['order']['order_details']:
-            left_in_stock = self.storage.decrement_stock(
+            self.storage.decrement_stock(
                 product['product_id'], product['quantity'])

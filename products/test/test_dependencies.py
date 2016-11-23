@@ -1,8 +1,7 @@
-import json
 import pytest
 from mock import Mock
 
-from products.dependencies import Storage, REDIS_URI_KEY
+from products.dependencies import Storage
 
 
 @pytest.fixture

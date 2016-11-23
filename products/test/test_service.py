@@ -101,7 +101,8 @@ def test_create_product_validation_error(
 @pytest.mark.parametrize('field', [
     'id', 'title', 'passenger_capacity', 'maximum_speed', 'in_stock'])
 def test_create_product_validation_error_on_required_fields(
-    field, product, redis_client, service_container):
+    field, product, redis_client, service_container
+):
 
     product.pop(field)
 
@@ -117,7 +118,8 @@ def test_create_product_validation_error_on_required_fields(
 @pytest.mark.parametrize('field', [
     'id', 'title', 'passenger_capacity', 'maximum_speed', 'in_stock'])
 def test_create_product_validation_error_on_non_nullable_fields(
-    field, product, redis_client, service_container):
+    field, product, redis_client, service_container
+):
 
     product[field] = None
 

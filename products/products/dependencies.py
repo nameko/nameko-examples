@@ -1,4 +1,3 @@
-import json
 from nameko.extensions import DependencyProvider
 import redis
 
