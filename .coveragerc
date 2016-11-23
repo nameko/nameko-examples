@@ -5,7 +5,9 @@ omit =
         */test/*
         */setup.py
 
-source = orders
+source =
+	products/products
+	orders/orders
 
 [html]
 directory = htmlcov

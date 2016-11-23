@@ -11,8 +11,9 @@ coverage-report:
 	coverage report -m
 
 test:
-	flake8 orders
-	coverage run -m pytest */test $(ARGS)
+	flake8 orders products
+	coverage run -m pytest products/test $(ARGS)
+	coverage run --append -m pytest orders/test $(ARGS)
 
 coverage: test coverage-report coverage-html
 
