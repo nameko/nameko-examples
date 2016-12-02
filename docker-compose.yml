@@ -18,6 +18,13 @@ services:
         POSTGRES_USER: "postgres"
     restart: always
 
+  redis:
+    container_name: nameko-example-redis
+    image: redis
+    ports:
+        - "6380:6379" # Exposing Redis on different port for convenience
+    restart: always
+
   orders:
     container_name: nameko-example-orders
     image: nameko/nameko-example-orders:latest
@@ -34,6 +41,27 @@ services:
         DB_USER: "postgres"
         DB_HOST: "postgres"
         DB_NAME: "orders"
+        RABBIT_PASSWORD: "guest"
+        RABBIT_USER: "guest"
+        RABBIT_HOST: "rabbit"
+        RABBIT_PORT: "5672"
+        RABBIT_MANAGEMENT_PORT: "15672"
+
+  products:
+    container_name: nameko-example-products
+    image: nameko/nameko-example-products:latest
+    depends_on:
+      - rabbit
+      - redis
+    ports:
+        - "8002:8000"
+    links:
+        - "rabbit:nameko-example-rabbitmq"
+        - "redis:nameko-example-redis"
+    environment:
+        REDIS_HOST: "redis"
+        REDIS_PORT: "6379"
+        REDIS_INDEX: "11"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"
