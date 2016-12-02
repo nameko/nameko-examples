@@ -10,19 +10,19 @@
 
 ## Overview
 
-### Repo structure
+### Repository structure
 When developing Nameko services you have a freedom to organize your repo structure anyway you want.
 
-For this example we placed 3 nameko services: `Products`, `Orders` and `Gateway` in one repository.
+For this example we placed 3 Nameko services: `Products`, `Orders` and `Gateway` in one repository.
 
 While possible, this is not necessarily the best practice. Aim to apply Domain Driven Design concepts and try to place only services that belong to the same bounded context in one repository e.g., Product (main service responsible for serving products) and Product Indexer (a service responsible for listening for product change events and indexing product data within search database).
 
 ### Services
-#### Products Service
+#### __Products Service__
 
 Responsible for storing and managing product information and exposing RPC Api that can be consumed by other services. This service is using Redis as it's data store. Example includes implementation of Nameko DependencyProvider **"Storage"** which is used for talking to Redis.
 
-#### Orders Service
+#### __Orders Service__
 
 Responsible for storing and managing orders information and exposing RPC Api that can be consumed by other services.
 
@@ -30,7 +30,7 @@ This service is using MySQL database to persist order information.
 - [nameko-sqlalchemy](https://pypi.python.org/pypi/nameko-sqlalchemy)  dependency is used to expose [SQLAlchemy](http://www.sqlalchemy.org/) session to the service class.
 - [Alembic](https://pypi.python.org/pypi/alembic) is used for database migrations.
 
-#### Gateway Service
+#### __Gateway Service__
 
 Is a service exposing HTTP Api to be used by external clients e.g., Web and Mobile APPS. It coordinates all incoming requests and composes responses based on data from underlying domain services.
 
