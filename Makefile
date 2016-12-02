@@ -1,6 +1,6 @@
 HTMLCOV_DIR ?= htmlcov
 
-IMAGES := orders
+IMAGES := orders gateway
 
 # test
 
@@ -11,8 +11,9 @@ coverage-report:
 	coverage report -m
 
 test:
-	flake8 orders
-	coverage run -m pytest */test $(ARGS)
+	flake8 orders gateway
+	coverage run -m pytest gateway/test $(ARGS)
+	coverage run -m pytest orders/test $(ARGS)
 
 coverage: test coverage-report coverage-html
 

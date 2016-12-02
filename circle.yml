@@ -10,7 +10,7 @@ machine:
 dependencies:
   pre:
     - pip install -U pip wheel setuptools
-    - cd orders; pip install -U .[dev]
+    - pip install -U orders/[dev] gateway/[dev]
 
 test:
   override:
