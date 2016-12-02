@@ -29,7 +29,7 @@ def upgrade():
         "order_details",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("order_id", sa.Integer(), nullable=False),
-        sa.Column("product_id", sa.Integer(), nullable=False),
+        sa.Column("product_id", sa.String(), nullable=False),
         sa.Column("price", sa.DECIMAL(18, 2), nullable=False),
         sa.Column("quantity", sa.Integer(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
