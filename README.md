@@ -39,7 +39,7 @@ Is a service exposing HTTP Api to be used by external clients e.g., Web and Mobi
 
 [Marshmallow](https://pypi.python.org/pypi/marshmallow) is used for validating, serializing and deserializing complex Python objects to JSON and vice versa in all services.
 
-## Run examples
+## Running examples
 
 Quickest way to try out examples is to run them with Docker Compose
 
@@ -129,7 +129,7 @@ $ curl -XPUT -d '{"order_details": [{"id": 1, "quantity": 2, "price": "100001.99
 $ curl -XDELETE 'http://localhost:8003/orders/1'
 ```
 
-## Run tests
+## Running tests
 
 Ensure RabbitMQ, MySQL and Redis are running and `config.yaml` files for each service are configured correctly. 
 
