@@ -89,7 +89,7 @@ $ curl 'http://localhost:8003/orders/1'
     {
       "id": 1,
       "price": "100000.99",
-      "quantity": 1
+      "quantity": 1,
       "product": {
         "id": "the_odyssey",
         "title": "The Odyssey",
@@ -112,7 +112,7 @@ $ curl -XPUT -d '{"order_details": [{"id": 1, "quantity": 2, "price": "100001.99
     {
       "id": 1,
       "price": "100001.99",
-      "quantity": 2
+      "quantity": 2,
       "product": {
         "id": "the_odyssey",
         "title": "The Odyssey",
