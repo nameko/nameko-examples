@@ -29,7 +29,7 @@ Responsible for storing and managing product information and exposing RPC Api th
 
 Responsible for storing and managing orders information and exposing RPC Api that can be consumed by other services.
 
-This service is using MySQL database to persist order information.
+This service is using PostgreSQL database to persist order information.
 - [nameko-sqlalchemy](https://pypi.python.org/pypi/nameko-sqlalchemy)  dependency is used to expose [SQLAlchemy](http://www.sqlalchemy.org/) session to the service class.
 - [Alembic](https://pypi.python.org/pypi/alembic) is used for database migrations.
 
@@ -131,6 +131,6 @@ $ curl -XDELETE 'http://localhost:8003/orders/1'
 
 ## Running tests
 
-Ensure RabbitMQ, MySQL and Redis are running and `config.yaml` files for each service are configured correctly. 
+Ensure RabbitMQ, PostgreSQL and Redis are running and `config.yaml` files for each service are configured correctly. 
 
 `$ make coverage`
