@@ -4,13 +4,14 @@ machine:
   services:
     - docker
     - rabbitmq-server
+    - redis
   pre:
     - sudo rabbitmq-plugins enable rabbitmq_management
 
 dependencies:
   pre:
     - pip install -U pip wheel setuptools
-    - pip install -U orders/[dev] gateway/[dev]
+    - pip install -U orders/[dev] products/[dev] gateway/[dev]
 
 test:
   override:

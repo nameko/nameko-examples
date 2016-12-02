@@ -6,8 +6,9 @@ omit =
         */setup.py
 
 source =
-       orders/orders
-       gateway/gateway
+	products/products
+	orders/orders
+    gateway/gateway
 
 [html]
 directory = htmlcov
