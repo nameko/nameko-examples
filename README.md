@@ -46,6 +46,6 @@ Docker images for [RabbitMQ](https://hub.docker.com/_/rabbitmq/), [PostgreSQL](h
 
 ## Run tests
 
-Ensure RabbitMQ, MySQL and Redis are running and
+Ensure RabbitMQ, MySQL and Redis are running and `config.yaml` files for each service are configured correctly. 
 
 `$ make coverage`
