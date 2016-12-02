@@ -12,8 +12,9 @@ coverage-report:
 
 test:
 	flake8 orders gateway
-	coverage run -m pytest gateway/test $(ARGS)
 	coverage run -m pytest orders/test $(ARGS)
+	coverage run -m pytest gateway/test $(ARGS)
+
 
 coverage: test coverage-report coverage-html
 

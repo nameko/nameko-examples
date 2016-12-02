@@ -1,5 +1,4 @@
 import json
-from nameko.exceptions import RemoteError
 from nameko.rpc import RpcProxy
 from nameko.web.handlers import http
 from werkzeug import Response
@@ -16,6 +15,7 @@ class Gateway(object):
     name = 'gateway'
 
     # TODO - config dependency
+    # TODO - schemas?
 
     orders_rpc = RpcProxy('orders')
     products_rpc = RpcProxy('products')
@@ -36,11 +36,9 @@ class Gateway(object):
         Also asynchronously collects product details for the order from the
         product service.
         """
-        try:
-            order = self.orders_rpc.get_order(order_id)
-        except RemoteError:
-            # TODO - should we show error handling here?
-            # (this isn't a great example!)
+        order = self.orders_rpc.get_order(order_id)
+        if not order:
+            # TODO maybe should make sure we return a 404?
             raise OrderNotFound('Order id {}'.format(order_id))
 
         # make async calls to products service.
