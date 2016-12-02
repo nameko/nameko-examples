@@ -59,7 +59,9 @@ services:
         - "rabbit:nameko-example-rabbitmq"
         - "redis:nameko-example-redis"
     environment:
-        REDIS_URI: "redis://redis:6379/11"
+        REDIS_HOST: "redis"
+        REDIS_PORT: "6379"
+        REDIS_INDEX: "11"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"
