@@ -1,3 +1,3 @@
 AMQP_URI: amqp://${RABBIT_USER:guest}:${RABBIT_PASSWORD:guest}@${RABBIT_HOST:localhost}:${RABBIT_PORT:5672}/
 
-REDIS_URI: redis://localhost:6379/11
+REDIS_URI: redis://${REDIS_HOST:localhost}:${REDIS_PORT:6379}/{REDIS_INDEX:11}
