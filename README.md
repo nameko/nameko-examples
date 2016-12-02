@@ -1,4 +1,4 @@
-# Nameko Examples
+# Nameko Examples (work in progress)
 ![Airship Ltd](airship.png)
 ## Airship Ltd
 Buying and selling quality airships since 2012
@@ -33,7 +33,7 @@ This service is using PostgreSQL database to persist order information.
 - [nameko-sqlalchemy](https://pypi.python.org/pypi/nameko-sqlalchemy)  dependency is used to expose [SQLAlchemy](http://www.sqlalchemy.org/) session to the service class.
 - [Alembic](https://pypi.python.org/pypi/alembic) is used for database migrations.
 
-#### Gateway Service
+#### Gateway Service (work in progress)
 
 Is a service exposing HTTP Api to be used by external clients e.g., Web and Mobile APPS. It coordinates all incoming requests and composes responses based on data from underlying domain services.
 
