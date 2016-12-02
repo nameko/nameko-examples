@@ -1,6 +1,6 @@
 HTMLCOV_DIR ?= htmlcov
 
-IMAGES := orders
+IMAGES := orders, products
 
 # test
 
