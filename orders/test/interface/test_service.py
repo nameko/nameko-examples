@@ -17,8 +17,12 @@ def order(db_session):
 @pytest.fixture
 def order_details(db_session, order):
     db_session.add_all([
-        OrderDetail(order=order, product_id=1, price=99.51, quantity=1),
-        OrderDetail(order=order, product_id=2, price=30.99, quantity=8)
+        OrderDetail(
+            order=order, product_id="the_odyssey", price=99.51, quantity=1
+        ),
+        OrderDetail(
+            order=order, product_id="the_enigma", price=30.99, quantity=8
+        )
     ])
     db_session.commit()
     return order_details
@@ -33,12 +37,12 @@ def test_get_order(orders_rpc, order):
 def test_can_create_order(orders_service, orders_rpc):
     order_details = [
         {
-            'product_id': 1,
+            'product_id': "the_odyssey",
             'price': 99.99,
             'quantity': 1
         },
         {
-            'product_id': 2,
+            'product_id': "the_enigma",
             'price': 5.99,
             'quantity': 8
         }
@@ -52,8 +56,18 @@ def test_can_create_order(orders_service, orders_rpc):
         'order_created', {'order': {
             'id': 1,
             'order_details': [
-                {'price': '99.99', 'product_id': 1, 'id': 1, 'quantity': 99},
-                {'price': '5.99', 'product_id': 2, 'id': 2, 'quantity': 5}
+                {
+                    'price': '99.99',
+                    'product_id': "the_odyssey",
+                    'id': 1,
+                    'quantity': 1
+                },
+                {
+                    'price': '5.99',
+                    'product_id': "the_enigma",
+                    'id': 2,
+                    'quantity': 8
+                }
             ]}}
     )] == orders_service.event_dispatcher.call_args_list
 

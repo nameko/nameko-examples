@@ -24,7 +24,7 @@ class OrdersService:
                 OrderDetail(
                     product_id=order_detail['product_id'],
                     price=order_detail['price'],
-                    quantity=order_detail['price']
+                    quantity=order_detail['quantity']
                 )
                 for order_detail in order_details
             ]
