@@ -1,4 +1,4 @@
-# Nameko Examples
+# Nameko Examples: Airship LTD
 
 [![CircleCI](https://circleci.com/gh/nameko/nameko-examples/tree/master.svg?style=svg)](https://circleci.com/gh/nameko/nameko-examples/tree/master)
 
@@ -43,6 +43,88 @@ Quickest way to try out examples is to run them with Docker Compose
 `$ docker-compose up`
 
 Docker images for [RabbitMQ](https://hub.docker.com/_/rabbitmq/), [PostgreSQL](https://hub.docker.com/_/postgres/) and [Redis](https://hub.docker.com/_/redis/) will be automatically downloaded and their containers linked to example service containers.
+
+When you see `Connected to amqp:...` it means services are up and running.
+
+Gateway service with HTTP Api is listening on port 8003 and these endpoitns are available to play with:
+
+#### Create Product
+
+```sh
+$ curl -XPOST -d '{"id": "the_odyssey", "title": "The Odyssey", "passenger_capacity": 101, "maximum_speed": 5, "in_stock": 10}' 'http://localhost:8003/products'
+```
+
+#### Get Prodct
+
+```sh
+$ curl 'http://localhost:8003/products/the_odyssey'
+
+{
+  "id": "the_odyssey",
+  "title": "The Odyssey", 
+  "passenger_capacity": 101,
+  "maximum_speed": 5,
+  "in_stock": 10
+}
+```
+#### Create Order
+
+```sh
+$ curl -XPOST -d '{"order_details": [{"product_id": "the_odyssey", "price": "100000.99", "quantity": 1}]}' 'http://localhost:8003/orders'
+
+{"id": 1}
+```
+
+#### Get Order
+
+```sh
+$ curl 'http://localhost:8003/orders/1'
+
+{
+  "id": 1,
+  "order_details": [
+    {
+      "id": 1,
+      "price": "100000.99",
+      "quantity": 1
+      "product": {
+        "id": "the_odyssey",
+        "title": "The Odyssey",
+        "passenger_capacity": 101,
+        "maximum_speed": 5
+      }
+    }
+  ]
+}
+```
+
+#### Update Order
+
+```sh
+$ curl -XPUT -d '{"order_details": [{"id": 1, "quantity": 2, "price": "100001.99"}]}' 'http://localhost:8003/orders/1'
+
+{
+  "id": 1,
+  "order_details": [
+    {
+      "id": 1,
+      "price": "100001.99",
+      "quantity": 2
+      "product": {
+        "id": "the_odyssey",
+        "title": "The Odyssey",
+        "passenger_capacity": 101,
+        "maximum_speed": 5
+      }
+    }
+  ]
+}
+```
+#### Delete Order
+
+```sh
+$ curl -XDELETE 'http://localhost:8003/orders/1'
+```
 
 ## Run tests
 
