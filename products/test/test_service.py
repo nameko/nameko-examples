@@ -32,18 +32,12 @@ def test_get_product_fails_on_not_found(service_container):
             get(111)
 
 
-def test_list_products(create_product, service_container):
-
-    stored_products = [
-        create_product(id=1, title='LZ 127'),
-        create_product(id=2, title='LZ 129'),
-        create_product(id=3, title='LZ 130'),
-    ]
+def test_list_products(products, service_container):
 
     with entrypoint_hook(service_container, 'list') as list_:
         listed_products = list_()
 
-    assert stored_products == sorted(listed_products, key=lambda p: p['id'])
+    assert products == sorted(listed_products, key=lambda p: p['id'])
 
 
 def test_list_productis_when_empty(service_container):
@@ -59,9 +53,9 @@ def test_create_product(product, redis_client, service_container):
     with entrypoint_hook(service_container, 'create') as create:
         create(product)
 
-    stored_product = redis_client.hgetall('products:1')
+    stored_product = redis_client.hgetall('products:LZ127')
 
-    assert product['id'] == int(stored_product[b'id'])
+    assert product['id'] == stored_product[b'id'].decode('utf-8')
     assert product['title'] == stored_product[b'title'].decode('utf-8')
     assert product['maximum_speed'] == int(stored_product[b'maximum_speed'])
     assert product['passenger_capacity'] == (
@@ -70,7 +64,7 @@ def test_create_product(product, redis_client, service_container):
 
 
 @pytest.mark.parametrize('product_overrides, expected_errors', [
-    ({'id': 'not-an-integer'}, {'id': ['Not a valid integer.']}),
+    ({'id': 111}, {'id': ['Not a valid string.']}),
     (
         {'passenger_capacity': 'not-an-integer'},
         {'passenger_capacity': ['Not a valid integer.']}
@@ -133,20 +127,16 @@ def test_create_product_validation_error_on_non_nullable_fields(
 
 
 def test_handle_order_created(
-    config, create_product, redis_client, service_container
+    config, products, redis_client, service_container
 ):
-
-    create_product(id=1, title='LZ 127', in_stock=10)
-    create_product(id=2, title='LZ 129', in_stock=11)
-    create_product(id=3, title='LZ 130', in_stock=12)
 
     dispatch = event_dispatcher(config)
 
     payload = {
         'order': {
             'order_details': [
-                {'product_id': 2, 'quantity': 2},
-                {'product_id': 1, 'quantity': 4},
+                {'product_id': 'LZ129', 'quantity': 2},
+                {'product_id': 'LZ127', 'quantity': 4},
             ]
         }
     }
@@ -156,7 +146,7 @@ def test_handle_order_created(
 
     product_one, product_two, product_three = [
         redis_client.hgetall('products:{}'.format(id_))
-        for id_ in (1, 2, 3)]
+        for id_ in ('LZ127', 'LZ129', 'LZ130')]
     assert b'6' == product_one[b'in_stock']
     assert b'9' == product_two[b'in_stock']
     assert b'12' == product_three[b'in_stock']

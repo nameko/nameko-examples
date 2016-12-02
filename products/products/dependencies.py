@@ -30,7 +30,7 @@ class StorageWrapper:
 
     def _from_hash(self, document):
         return {
-            'id': int(document[b'id']),
+            'id': document[b'id'].decode('utf-8'),
             'title': document[b'title'].decode('utf-8'),
             'passenger_capacity': int(document[b'passenger_capacity']),
             'maximum_speed': int(document[b'maximum_speed']),

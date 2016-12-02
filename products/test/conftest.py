@@ -26,7 +26,7 @@ def redis_client(config):
 @pytest.fixture
 def product():
     return {
-        'id': 1,
+        'id': 'LZ127',
         'title': 'LZ 127',
         'passenger_capacity': 72,
         'maximum_speed': 130,
@@ -50,21 +50,24 @@ def create_product(redis_client, product):
 def products(create_product):
     return [
         create_product(
-            id=1,
+            id='LZ127',
             title='LZ 127 Graf Zeppelin',
             passenger_capacity=20,
             maximum_speed=128,
+            in_stock=10,
         ),
         create_product(
-            id=2,
+            id='LZ129',
             title='LZ 129 Hindenburg',
             passenger_capacity=50,
             maximum_speed=135,
+            in_stock=11,
         ),
         create_product(
-            id=3,
+            id='LZ130',
             title='LZ 130 Graf Zeppelin II',
             passenger_capacity=72,
             maximum_speed=135,
+            in_stock=12,
         ),
     ]
