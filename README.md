@@ -35,7 +35,7 @@ This service is using PostgreSQL database to persist order information.
 
 #### Gateway Service (work in progress)
 
-Is a service exposing HTTP Api to be used by external clients e.g., Web and Mobile APPS. It coordinates all incoming requests and composes responses based on data from underlying domain services.
+Is a service exposing HTTP Api to be used by external clients e.g., Web and Mobile Apps. It coordinates all incoming requests and composes responses based on data from underlying domain services.
 
 [Marshmallow](https://pypi.python.org/pypi/marshmallow) is used for validating, serializing and deserializing complex Python objects to JSON and vice versa in all services.
 
