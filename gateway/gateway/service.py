@@ -1,11 +1,12 @@
 import json
 
 from marshmallow import ValidationError
+from nameko.exceptions import BadRequest
 from nameko.rpc import RpcProxy
-from nameko.web.handlers import http
 from werkzeug import Response
 
 from gateway.dependencies import Config
+from gateway.entrypoints import http
 from gateway.exceptions import OrderNotFound, ProductNotFound
 from gateway.schemas import CreateOrderSchema
 
@@ -21,19 +22,14 @@ class Gateway(object):
     orders_rpc = RpcProxy('orders')
     products_rpc = RpcProxy('products')
 
-    @http("GET", "/orders/<int:order_id>")
+    @http("GET", "/orders/<int:order_id>", expected_exceptions=OrderNotFound)
     def get_order(self, request, order_id):
         """Gets the order details for the order given by `order_id`.
 
         Enhances the order details with full product details from the
         products-service.
         """
-        try:
-            order = self._get_order(order_id)
-        except OrderNotFound:
-            # Return 404
-            return Response("Order {} not found".format(order_id), status=404)
-
+        order = self._get_order(order_id)
         return Response(json.dumps(order), mimetype='application/json')
 
     def _get_order(self, order_id):
@@ -58,36 +54,31 @@ class Gateway(object):
 
         return order
 
-    @http("POST", "/orders")
+    @http(
+        "POST", "/orders",
+        expected_exceptions=(ValidationError, ProductNotFound, BadRequest)
+    )
     def create_order(self, request):
-        """
-        Create a new order - order data is posted as json
+        """Create a new order - order data is posted as json
         """
         try:
             raw_data = json.loads(request.get_data(as_text=True))
         except ValueError as exc:
-            # Return 400
-            return Response(
-                "Bad request - Invalid json: {}".format(exc), status=400
-            )
+            raise BadRequest("Invalid json: {}".format(exc))
 
-        try:
-            # load input data through a schema (for validation)
-            schema = CreateOrderSchema(strict=True)
-            order_data = schema.load(raw_data).data
-        except ValidationError as exc:
-            # Return 400
-            return Response("Bad request: {}".format(exc), status=400)
+        # load input data through a schema (for validation)
+        # Note - this may raise `ValidationError`
+        schema = CreateOrderSchema(strict=True)
+        order_data = schema.load(raw_data).data
 
-        try:
-            id_ = self._create_order(order_data)
-        except ProductNotFound as exc:
-            return Response("ProductNotFound: {}".format(exc), status=404)
-
+        # Create the order
+        # Note - this may raise `ProductNotFound`
+        id_ = self._create_order(order_data)
         return Response(json.dumps({'id': id_}), mimetype='application/json')
 
     def _create_order(self, order_data):
         # check order product ids are valid
+        # TODO - should the orders service do this validation instead?
         valid_product_ids = {prod['id'] for prod in self.products_rpc.list()}
         for item in order_data['order_details']:
             if item['product_id'] not in valid_product_ids:
