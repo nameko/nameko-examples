@@ -33,13 +33,6 @@ class Gateway(object):
         except OrderNotFound:
             # Return 404
             return Response("Order {} not found".format(order_id), status=404)
-        except ProductNotFound as exc:
-            # Return a 500
-            return Response(
-                "Order {} is invalid: "
-                "Product {} not found.".format(order_id, exc),
-                status=500
-            )
 
         return Response(json.dumps(order), mimetype='application/json')
 
@@ -58,11 +51,8 @@ class Gateway(object):
         # Enhance order details with product and image details.
         for item in order['order_details']:
             product_id = item['product_id']
-            try:
-                item['product'] = product_map[product_id]
-            except KeyError:
-                raise ProductNotFound("Product Id {}".format(product_id))
 
+            item['product'] = product_map[product_id]
             # Construct an image url.
             item['image'] = '{}/{}.jpg'.format(image_root, product_id)
 
