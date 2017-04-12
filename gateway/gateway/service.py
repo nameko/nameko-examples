@@ -11,7 +11,7 @@ from gateway.exceptions import OrderNotFound, ProductNotFound
 from gateway.schemas import CreateOrderSchema
 
 
-class Gateway(object):
+class GatewayService(object):
     """
     Service acts as a gateway to other services over http.
     """

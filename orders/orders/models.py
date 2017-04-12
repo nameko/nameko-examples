@@ -26,13 +26,13 @@ DeclarativeBase = declarative_base(cls=Base)
 class Order(DeclarativeBase):
     __tablename__ = "orders"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
 
 class OrderDetail(DeclarativeBase):
     __tablename__ = "order_details"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(
         Integer,
         ForeignKey("orders.id", name="fk_order_details_orders"),

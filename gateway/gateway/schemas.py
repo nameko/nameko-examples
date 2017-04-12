@@ -8,4 +8,6 @@ class CreateOrderDetailSchema(Schema):
 
 
 class CreateOrderSchema(Schema):
-    order_details = fields.Nested(CreateOrderDetailSchema, many=True, required=True)
+    order_details = fields.Nested(
+        CreateOrderDetailSchema, many=True, required=True
+    )

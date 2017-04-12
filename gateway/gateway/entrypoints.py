@@ -10,9 +10,6 @@ from gateway.exceptions import ProductNotFound, OrderNotFound
 
 class HttpEntrypoint(HttpRequestHandler):
     """ Overrides `response_from_exception` so we can customize error handling.
-
-    TODO - is this a reasonable example approach do you think? (rather than
-    creating and raising Http-type errors within the service code?)
     """
 
     mapped_errors = {
