@@ -21,7 +21,6 @@
 import pytest
 from collections import namedtuple
 
-from nameko.standalone.rpc import ServiceRpcProxy
 from nameko.testing.services import replace_dependencies
 
 from gateway.service import GatewayService
@@ -31,7 +30,7 @@ from gateway.service import GatewayService
 def config(web_config, rabbit_config):
     gateway_config = rabbit_config.copy()
     gateway_config.update(web_config)
-    gateway_config['PRODUCT_IMAGE_ROOT'] = 'http://foo.com/airship/images'
+    gateway_config['PRODUCT_IMAGE_ROOT'] = 'http://example.com/airship/images'
     return gateway_config
 
 

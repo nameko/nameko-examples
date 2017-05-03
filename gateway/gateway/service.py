@@ -60,6 +60,29 @@ class GatewayService(object):
     )
     def create_order(self, request):
         """Create a new order - order data is posted as json
+
+        Example request ::
+
+            {
+                'order_details': [
+                    {
+                        'product_id': 'the_odyssey',
+                        'price': '99.99',
+                        'quantity': 1
+                    },
+                    {
+                        'price': '5.99',
+                        'product_id': 'the_enigma',
+                        'quantity': 2
+                    },
+                ]
+            }
+
+
+        The response contains the new order ID in a json document ::
+
+            {'id': 1234}
+
         """
         try:
             raw_data = json.loads(request.get_data(as_text=True))
@@ -78,7 +101,6 @@ class GatewayService(object):
 
     def _create_order(self, order_data):
         # check order product ids are valid
-        # TODO - should the orders service do this validation instead?
         valid_product_ids = {prod['id'] for prod in self.products_rpc.list()}
         for item in order_data['order_details']:
             if item['product_id'] not in valid_product_ids:

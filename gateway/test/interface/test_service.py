@@ -1,3 +1,5 @@
+import json
+
 from mock import call
 
 from gateway.exceptions import OrderNotFound
@@ -13,13 +15,13 @@ class TestGetOrder(object):
                 {
                     'id': 1,
                     'quantity': 2,
-                    'product_id': '1',
+                    'product_id': 'the_odyssey',
                     'price': '200.00'
                 },
                 {
                     'id': 2,
                     'quantity': 1,
-                    'product_id': '2',
+                    'product_id': 'the_enigma',
                     'price': '400.00'
                 }
             ]
@@ -28,20 +30,19 @@ class TestGetOrder(object):
         # setup mock products-service response:
         gateway_service.products_rpc.list.return_value = [
             {
-                'id': '1',
-                'title': 'big',
+                'id': 'the_odyssey',
+                'title': 'The Odyssey',
                 'maximum_speed': 3,
                 'in_stock': 899,
                 'passenger_capacity': 100
             },
             {
-                'id': '2',
-                'title': 'small',
+                'id': 'the_enigma',
+                'title': 'The Enigma',
                 'maximum_speed': 200,
                 'in_stock': 1,
                 'passenger_capacity': 4
             },
-
         ]
 
         # call the gateway service to get order #1
@@ -54,11 +55,12 @@ class TestGetOrder(object):
                 {
                     'id': 1,
                     'quantity': 2,
-                    'product_id': '1',
-                    'image': 'http://foo.com/airship/images/1.jpg',
+                    'product_id': 'the_odyssey',
+                    'image':
+                        'http://example.com/airship/images/the_odyssey.jpg',
                     'product': {
-                        'id': '1',
-                        'title': 'big',
+                        'id': 'the_odyssey',
+                        'title': 'The Odyssey',
                         'maximum_speed': 3,
                         'in_stock': 899,
                         'passenger_capacity': 100
@@ -68,11 +70,12 @@ class TestGetOrder(object):
                 {
                     'id': 2,
                     'quantity': 1,
-                    'product_id': '2',
-                    'image': 'http://foo.com/airship/images/2.jpg',
+                    'product_id': 'the_enigma',
+                    'image':
+                        'http://example.com/airship/images/the_enigma.jpg',
                     'product': {
-                        'id': '2',
-                        'title': 'small',
+                        'id': 'the_enigma',
+                        'title': 'The Enigma',
                         'maximum_speed': 200,
                         'in_stock': 1,
                         'passenger_capacity': 4
@@ -101,19 +104,115 @@ class TestGetOrder(object):
 
 class TestCreateOrder(object):
 
-    def test_can_create_order(self):
-        pass
+    def test_can_create_order(self, gateway_service, web_session):
+        # setup mock products-service response:
+        gateway_service.products_rpc.list.return_value = [
+            {
+                'id': 'the_odyssey',
+                'title': 'The Odyssey',
+                'maximum_speed': 3,
+                'in_stock': 899,
+                'passenger_capacity': 100
+            },
+            {
+                'id': 'the_enigma',
+                'title': 'The Enigma',
+                'maximum_speed': 200,
+                'in_stock': 1,
+                'passenger_capacity': 4
+            },
+        ]
 
-        # {
-        #     'order_details': [
-        #         {
-        #             'product_id': '1',
-        #             'price': '41',
-        #             'quantity': 3
-        #         }
-        #     ]
-        # }
+        # setup mock create response
+        gateway_service.orders_rpc.create_order.return_value = {
+            'id': 11,
+            'order_details': []
+        }
 
-        # {
-        #   'id': 11
-        # }
+        # call the gateway service to create the order
+        response = web_session.post(
+            '/orders',
+            json.dumps({
+                'order_details': [
+                    {
+                        'product_id': 'the_odyssey',
+                        'price': '41.00',
+                        'quantity': 3
+                    }
+                ]
+            })
+        )
+        assert response.status_code == 200
+        assert response.json() == {'id': 11}
+        assert gateway_service.products_rpc.list.call_args_list == [call()]
+        assert gateway_service.orders_rpc.create_order.call_args_list == [
+            call([
+                {'product_id': 'the_odyssey', 'quantity': 3, 'price': '41.00'}
+            ])
+        ]
+
+    def test_create_order_fails_with_invalid_json(
+        self, gateway_service, web_session
+    ):
+        # call the gateway service to create the order
+        response = web_session.post(
+            '/orders', 'NOT-JSON'
+        )
+        assert response.status_code == 400
+        assert response.json()['error'] == 'BAD_REQUEST'
+
+    def test_create_order_fails_with_invalid_data(
+        self, gateway_service, web_session
+    ):
+        # call the gateway service to create the order
+        response = web_session.post(
+            '/orders',
+            json.dumps({
+                'order_details': [
+                    {
+                        'product_id': 'the_odyssey',
+                        'price': '41.00',
+                    }
+                ]
+            })
+        )
+        assert response.status_code == 400
+        assert response.json()['error'] == 'VALIDATION_ERROR'
+
+    def test_create_order_fails_with_unknown_product(
+        self, gateway_service, web_session
+    ):
+        # setup mock products-service response:
+        gateway_service.products_rpc.list.return_value = [
+            {
+                'id': 'the_odyssey',
+                'title': 'The Odyssey',
+                'maximum_speed': 3,
+                'in_stock': 899,
+                'passenger_capacity': 100
+            },
+            {
+                'id': 'the_enigma',
+                'title': 'The Enigma',
+                'maximum_speed': 200,
+                'in_stock': 1,
+                'passenger_capacity': 4
+            },
+        ]
+
+        # call the gateway service to create the order
+        response = web_session.post(
+            '/orders',
+            json.dumps({
+                'order_details': [
+                    {
+                        'product_id': 'unknown',
+                        'price': '41',
+                        'quantity': 1
+                    }
+                ]
+            })
+        )
+        assert response.status_code == 404
+        assert response.json()['error'] == 'PRODUCT_NOT_FOUND'
+        assert response.json()['message'] == 'Product Id unknown'

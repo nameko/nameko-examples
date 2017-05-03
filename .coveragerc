@@ -8,7 +8,7 @@ omit =
 source =
 	products/products
 	orders/orders
-    gateway/gateway
+	gateway/gateway
 
 [html]
 directory = htmlcov
