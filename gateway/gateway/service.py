@@ -84,15 +84,16 @@ class GatewayService(object):
             {'id': 1234}
 
         """
+
+        schema = CreateOrderSchema(strict=True)
+
         try:
-            raw_data = json.loads(request.get_data(as_text=True))
+            # load input data through a schema (for validation)
+            # Note - this may raise `ValueError` for invalid json,
+            # or `ValidationError` if data is invalid.
+            order_data = schema.loads(request.get_data(as_text=True)).data
         except ValueError as exc:
             raise BadRequest("Invalid json: {}".format(exc))
-
-        # load input data through a schema (for validation)
-        # Note - this may raise `ValidationError`
-        schema = CreateOrderSchema(strict=True)
-        order_data = schema.load(raw_data).data
 
         # Create the order
         # Note - this may raise `ProductNotFound`
