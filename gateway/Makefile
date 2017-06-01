@@ -1,3 +1,5 @@
+TAG ?= dev
+
 # docker
 
 run-wheel-builder:
@@ -7,3 +9,9 @@ run-wheel-builder:
 
 build-image:
 	docker build -t nameko/nameko-example-gateway:latest -f docker.run .;
+
+tag-image:
+	docker tag nameko/nameko-example-gateway:latest nameko/nameko-example-gateway:$(TAG)
+
+push-image: tag-image
+	docker push nameko/nameko-example-gateway:$(TAG)
