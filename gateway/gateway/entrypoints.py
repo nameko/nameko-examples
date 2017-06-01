@@ -25,7 +25,7 @@ class HttpEntrypoint(HttpRequestHandler):
         if isinstance(exc, self.expected_exceptions):
             if type(exc) in self.mapped_errors:
                 status_code, error_code = self.mapped_errors[type(exc)]
-            else:  # pragma: no cover
+            else:
                 status_code = 400
                 error_code = 'BAD_REQUEST'
 
