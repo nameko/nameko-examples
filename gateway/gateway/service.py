@@ -8,7 +8,7 @@ from werkzeug import Response
 from gateway.dependencies import Config
 from gateway.entrypoints import http
 from gateway.exceptions import OrderNotFound, ProductNotFound
-from gateway.schemas import CreateOrderSchema
+from gateway.schemas import CreateOrderSchema, GetOrderSchema
 
 
 class GatewayService(object):
@@ -30,7 +30,10 @@ class GatewayService(object):
         products-service.
         """
         order = self._get_order(order_id)
-        return Response(json.dumps(order), mimetype='application/json')
+        return Response(
+            GetOrderSchema().dumps(order).data,
+            mimetype='application/json'
+        )
 
     def _get_order(self, order_id):
         # Retrieve order data from the orders service.
