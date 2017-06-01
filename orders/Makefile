@@ -12,5 +12,5 @@ build-image:
 tag-image:
 	docker tag nameko/nameko-example-orders:latest nameko/nameko-example-orders:$(TAG)
 
-push-image: build-image tag-image
+push-image: tag-image
 	docker push nameko/nameko-example-orders:$(TAG)

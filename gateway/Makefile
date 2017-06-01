@@ -13,5 +13,5 @@ build-image:
 tag-image:
 	docker tag nameko/nameko-example-gateway:latest nameko/nameko-example-gateway:$(TAG)
 
-push-image: build-image tag-image
+push-image: tag-image
 	docker push nameko/nameko-example-gateway:$(TAG)
