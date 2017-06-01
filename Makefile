@@ -35,7 +35,7 @@ build-images: run-wheel-builder
 build: build-images
 
 docker-login:
-	docker login --password=$(DOCKER_PASSWORD) --username=$(DOCKER_USERNAME)
+	docker login --email=$(DOCKER_EMAIL) --password=$(DOCKER_PASSWORD) --username=$(DOCKER_USERNAME)
 
 push-images:
 	for image in $(IMAGES) ; do make -C $$image push-image; done
