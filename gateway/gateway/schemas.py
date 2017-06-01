@@ -13,23 +13,23 @@ class CreateOrderSchema(Schema):
     )
 
 
+class ProductSchema(Schema):
+    id = fields.Str()
+    title = fields.Str()
+    maximum_speed = fields.Int()
+    in_stock = fields.Int()
+    passenger_capacity = fields.Int()
+
+
 class GetOrderSchema(Schema):
 
     class OrderDetail(Schema):
-
-        class Product(Schema):
-            id = fields.Str()
-            title = fields.Str()
-            maximum_speed = fields.Int()
-            in_stock = fields.Int()
-            passenger_capacity = fields.Int()
-
         id = fields.Int()
         quantity = fields.Int()
         product_id = fields.Str()
         image = fields.Str()
         price = fields.Decimal(as_string=True)
-        product = fields.Nested(Product, many=False)
+        product = fields.Nested(ProductSchema, many=False)
 
     id = fields.Int()
     order_details = fields.Nested(OrderDetail, many=True)

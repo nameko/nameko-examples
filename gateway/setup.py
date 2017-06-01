@@ -7,6 +7,7 @@ setup(
     description='Gateway for Airships ltd',
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=[
+        "marshmallow==2.9.1",
         "nameko==2.6.0",
     ],
     extras_require={

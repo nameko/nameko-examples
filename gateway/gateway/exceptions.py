@@ -25,5 +25,6 @@ class OrderNotFound(Exception):
     pass
 
 
+@remote_error('products.exceptions.NotFound')
 class ProductNotFound(Exception):
     pass
