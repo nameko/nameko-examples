@@ -20,6 +20,7 @@ class Base(object):
         nullable=False
     )
 
+
 DeclarativeBase = declarative_base(cls=Base)
 
 

@@ -25,7 +25,7 @@ class HttpEntrypoint(HttpRequestHandler):
         if isinstance(exc, self.expected_exceptions):
             if type(exc) in self.mapped_errors:
                 status_code, error_code = self.mapped_errors[type(exc)]
-            else:
+            else:  # pragma: no cover
                 status_code = 400
                 error_code = 'BAD_REQUEST'
 
@@ -37,5 +37,6 @@ class HttpEntrypoint(HttpRequestHandler):
             status=status_code,
             mimetype='application/json'
         )
+
 
 http = HttpEntrypoint.decorator
