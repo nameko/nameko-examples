@@ -14,11 +14,11 @@ class CreateOrderSchema(Schema):
 
 
 class ProductSchema(Schema):
-    id = fields.Str()
-    title = fields.Str()
-    maximum_speed = fields.Int()
-    in_stock = fields.Int()
-    passenger_capacity = fields.Int()
+    id = fields.Str(required=True)
+    title = fields.Str(required=True)
+    maximum_speed = fields.Int(required=True)
+    in_stock = fields.Int(required=True)
+    passenger_capacity = fields.Int(required=True)
 
 
 class GetOrderSchema(Schema):
