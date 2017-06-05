@@ -1,6 +1,7 @@
 import pytest
 
 from mock import call
+from nameko.exceptions import RemoteError
 
 from orders.models import Order, OrderDetail
 from orders.schemas import OrderSchema, OrderDetailSchema
@@ -31,6 +32,13 @@ def order_details(db_session, order):
 def test_get_order(orders_rpc, order):
     response = orders_rpc.get_order(1)
     assert response['id'] == order.id
+
+
+@pytest.mark.usefixtures('db_session')
+def test_will_raise_when_order_not_found(orders_rpc):
+    with pytest.raises(RemoteError) as err:
+        orders_rpc.get_order(1)
+    assert err.value.value == 'Order with id 1 not found'
 
 
 @pytest.mark.usefixtures('db_session')

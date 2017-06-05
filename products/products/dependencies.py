@@ -1,12 +1,10 @@
 from nameko.extensions import DependencyProvider
 import redis
 
+from products.exceptions import NotFound
+
 
 REDIS_URI_KEY = 'REDIS_URI'
-
-
-class NotFound(Exception):
-    pass
 
 
 class StorageWrapper:

@@ -2,7 +2,83 @@ import json
 
 from mock import call
 
-from gateway.exceptions import OrderNotFound
+from gateway.exceptions import OrderNotFound, ProductNotFound
+
+
+class TestGetProduct(object):
+    def test_can_get_product(self, gateway_service, web_session):
+        gateway_service.products_rpc.get.return_value = {
+            "in_stock": 10,
+            "maximum_speed": 5,
+            "id": "the_odyssey",
+            "passenger_capacity": 101,
+            "title": "The Odyssey"
+        }
+        response = web_session.get('/products/the_odyssey')
+        assert response.status_code == 200
+        assert gateway_service.products_rpc.get.call_args_list == [
+            call("the_odyssey")
+        ]
+        assert response.json() == {
+            "in_stock": 10,
+            "maximum_speed": 5,
+            "id": "the_odyssey",
+            "passenger_capacity": 101,
+            "title": "The Odyssey"
+        }
+
+    def test_product_not_found(self, gateway_service, web_session):
+        gateway_service.products_rpc.get.side_effect = (
+            ProductNotFound('missing'))
+
+        # call the gateway service to get order #1
+        response = web_session.get('/products/foo')
+        assert response.status_code == 404
+        payload = response.json()
+        assert payload['error'] == 'PRODUCT_NOT_FOUND'
+        assert payload['message'] == 'missing'
+
+
+class TestCreateProduct(object):
+    def test_can_create_product(self, gateway_service, web_session):
+        response = web_session.post(
+            '/products',
+            json.dumps({
+                "in_stock": 10,
+                "maximum_speed": 5,
+                "id": "the_odyssey",
+                "passenger_capacity": 101,
+                "title": "The Odyssey"
+            })
+        )
+        assert response.status_code == 200
+        assert response.json() == {'id': 'the_odyssey'}
+        assert gateway_service.products_rpc.create.call_args_list == [call({
+                "in_stock": 10,
+                "maximum_speed": 5,
+                "id": "the_odyssey",
+                "passenger_capacity": 101,
+                "title": "The Odyssey"
+            })]
+
+    def test_create_product_fails_with_invalid_json(
+        self, gateway_service, web_session
+    ):
+        response = web_session.post(
+            '/products', 'NOT-JSON'
+        )
+        assert response.status_code == 400
+        assert response.json()['error'] == 'BAD_REQUEST'
+
+    def test_create_product_fails_with_invalid_data(
+        self, gateway_service, web_session
+    ):
+        response = web_session.post(
+            '/products',
+            json.dumps({"id": 1})
+        )
+        assert response.status_code == 400
+        assert response.json()['error'] == 'VALIDATION_ERROR'
 
 
 class TestGetOrder(object):
