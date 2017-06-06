@@ -14,7 +14,7 @@ Buying and selling quality airships since 2012
 ## Overview
 
 ### Repository structure
-When developing Nameko services you have a freedom to organize your repo structure anyway you want.
+When developing Nameko services you have the freedom to organize your repo structure any way you want.
 
 For this example we placed 3 Nameko services: `Products`, `Orders` and `Gateway` in one repository.
 
