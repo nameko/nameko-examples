@@ -1,0 +1,2 @@
+AMQP_URI: amqp://${RABBIT_USER:guest}:${RABBIT_PASSWORD:guest}@${RABBIT_HOST:localhost}:${RABBIT_PORT:5672}/
+PRODUCT_IMAGE_ROOT: "http://www.example.com/airship/images"

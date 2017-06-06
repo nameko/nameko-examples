@@ -1,6 +1,6 @@
 HTMLCOV_DIR ?= htmlcov
 
-IMAGES := orders products
+IMAGES := orders products gateway
 
 # test
 
@@ -11,9 +11,10 @@ coverage-report:
 	coverage report -m
 
 test:
-	flake8 orders products
-	coverage run -m pytest products/test $(ARGS)
+	flake8 orders products gateway
+	coverage run -m pytest gateway/test $(ARGS)
 	coverage run --append -m pytest orders/test $(ARGS)
+	coverage run --append -m pytest products/test $(ARGS)
 
 coverage: test coverage-report coverage-html
 
@@ -32,3 +33,9 @@ build-images: run-wheel-builder
 	for image in $(IMAGES) ; do make -C $$image build-image; done
 
 build: build-images
+
+docker-login:
+	docker login --email=$(DOCKER_EMAIL) --password=$(DOCKER_PASSWORD) --username=$(DOCKER_USERNAME)
+
+push-images: build
+	for image in $(IMAGES) ; do make -C $$image push-image; done

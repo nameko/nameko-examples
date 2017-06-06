@@ -67,3 +67,19 @@ services:
         RABBIT_HOST: "rabbit"
         RABBIT_PORT: "5672"
         RABBIT_MANAGEMENT_PORT: "15672"
+
+  gateway:
+    container_name: nameko-example-gateway
+    image: nameko/nameko-example-gateway:latest
+    depends_on:
+      - rabbit
+    ports:
+        - "8003:8000"
+    links:
+        - "rabbit:nameko-example-rabbitmq"
+    environment:
+        RABBIT_PASSWORD: "guest"
+        RABBIT_USER: "guest"
+        RABBIT_HOST: "rabbit"
+        RABBIT_PORT: "5672"
+        RABBIT_MANAGEMENT_PORT: "15672"

@@ -1,4 +1,4 @@
-# Nameko Examples (work in progress)
+# Nameko Examples
 ![Airship Ltd](airship.png)
 ## Airship Ltd
 Buying and selling quality airships since 2012
@@ -33,7 +33,7 @@ This service is using PostgreSQL database to persist order information.
 - [nameko-sqlalchemy](https://pypi.python.org/pypi/nameko-sqlalchemy)  dependency is used to expose [SQLAlchemy](http://www.sqlalchemy.org/) session to the service class.
 - [Alembic](https://pypi.python.org/pypi/alembic) is used for database migrations.
 
-#### Gateway Service (work in progress)
+#### Gateway Service
 
 Is a service exposing HTTP Api to be used by external clients e.g., Web and Mobile Apps. It coordinates all incoming requests and composes responses based on data from underlying domain services.
 
@@ -57,14 +57,14 @@ Gateway service with HTTP Api is listening on port 8003 and these endpoitns are 
 $ curl -XPOST -d '{"id": "the_odyssey", "title": "The Odyssey", "passenger_capacity": 101, "maximum_speed": 5, "in_stock": 10}' 'http://localhost:8003/products'
 ```
 
-#### Get Prodct
+#### Get Product
 
 ```sh
 $ curl 'http://localhost:8003/products/the_odyssey'
 
 {
   "id": "the_odyssey",
-  "title": "The Odyssey", 
+  "title": "The Odyssey",
   "passenger_capacity": 101,
   "maximum_speed": 5,
   "in_stock": 10
@@ -88,49 +88,24 @@ $ curl 'http://localhost:8003/orders/1'
   "order_details": [
     {
       "id": 1,
-      "price": "100000.99",
       "quantity": 1,
+      "product_id": "the_odyssey",
+      "image": "http://www.example.com/airship/images/the_odyssey.jpg",
+      "price": "100000.99",
       "product": {
+        "maximum_speed": 5,
         "id": "the_odyssey",
         "title": "The Odyssey",
         "passenger_capacity": 101,
-        "maximum_speed": 5
+        "in_stock": 9
       }
     }
   ]
 }
-```
-
-#### Update Order
-
-```sh
-$ curl -XPUT -d '{"order_details": [{"id": 1, "quantity": 2, "price": "100001.99"}]}' 'http://localhost:8003/orders/1'
-
-{
-  "id": 1,
-  "order_details": [
-    {
-      "id": 1,
-      "price": "100001.99",
-      "quantity": 2,
-      "product": {
-        "id": "the_odyssey",
-        "title": "The Odyssey",
-        "passenger_capacity": 101,
-        "maximum_speed": 5
-      }
-    }
-  ]
-}
-```
-#### Delete Order
-
-```sh
-$ curl -XDELETE 'http://localhost:8003/orders/1'
 ```
 
 ## Running tests
 
-Ensure RabbitMQ, PostgreSQL and Redis are running and `config.yaml` files for each service are configured correctly. 
+Ensure RabbitMQ, PostgreSQL and Redis are running and `config.yaml` files for each service are configured correctly.
 
 `$ make coverage`

@@ -11,10 +11,20 @@ machine:
 dependencies:
   pre:
     - pip install -U pip wheel setuptools
-    - pip install -U orders/[dev] products/[dev]
+    - pip install -U orders/[dev] products/[dev] gateway/[dev]
 
 test:
   override:
     - HTMLCOV_DIR=$CIRCLE_ARTIFACTS make coverage
-  post:
-    - make build
+
+deployment:
+  docker-latest:
+    branch: master
+    commands:
+      - make docker-login
+      - TAG=latest make push-images
+  docker-dev:
+    branch: /.*/
+    commands:
+      - make docker-login
+      - TAG=dev make push-images
