@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    tag: {{ .Values.image.tag }}
+    revision: "{{ .Release.Revision }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+      - image: nameko/nameko-example-gateway:{{ .Values.image.tag }}
+        name: {{ .Chart.Name }}
+        env:
+          - name: RABBIT_HOST
+            value: broker-rabbitmq
+          - name: RABBIT_MANAGEMENT_PORT
+            value: "15672"
+          - name: RABBIT_PORT
+            value: "5672"
+          - name: RABBIT_USER
+            value: user
+          - name: RABBIT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: broker-rabbitmq
+                key: rabbitmq-password
+      restartPolicy: Always

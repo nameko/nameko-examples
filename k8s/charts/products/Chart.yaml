@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Products Service Kubernetes Chart
+name: products
+version: 0.1.0

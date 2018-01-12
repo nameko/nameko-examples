@@ -10,7 +10,7 @@ setup(
     py_modules=['products'],
     install_requires=[
         "marshmallow==2.9.1",
-        "nameko==2.6.0",
+        "nameko==2.8.3",
         "redis==2.10.5",
     ],
     extras_require={
