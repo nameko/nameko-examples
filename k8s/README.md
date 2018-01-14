@@ -215,7 +215,7 @@ As you can see this template is using values coming from `Chart` and `Values` fi
 Please read [The Chart Template Developer’s Guide](https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide)
 to learn about creating your own charts.
 
-To route traffic to our gateway service we’ll be using ingress. For ingress to work Ingress Controller has to be enabled on our cluster:
+To route traffic to our gateway service we’ll be using ingress. For ingress to work `Ingress Controller` has to be enabled on our cluster:
 
 `$ minikube addons enable ingress`
 
