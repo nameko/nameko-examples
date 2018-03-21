@@ -7,11 +7,11 @@ setup(
     description='Store and serve orders',
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=[
-        'nameko==2.6.0',
+        'nameko==2.8.5',
         'nameko-sqlalchemy==0.0.4',
         'alembic==0.8.7',
         'marshmallow==2.9.1',
-        'psycopg2==2.6.2',
+        'psycopg2==2.7.4',
     ],
     extras_require={
         'dev': [
