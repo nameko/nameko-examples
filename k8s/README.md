@@ -123,7 +123,7 @@ To deploy our example services, we'll have to create Kubernetes deployment defin
 Most of the time (in real world) you would want to use some dynamic data during your deployments e.g. define image tags.
 The easiest way to do this is to create Helm Charts for each of our service and use Helm to deploy them. 
 
-Our chars are organized as follows:
+Our charts are organized as follows:
 
 ```txt
 charts
