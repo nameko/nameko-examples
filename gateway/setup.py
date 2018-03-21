@@ -8,7 +8,7 @@ setup(
     packages=find_packages(exclude=['test', 'test.*']),
     install_requires=[
         "marshmallow==2.9.1",
-        "nameko==2.8.3",
+        "nameko==2.8.5",
     ],
     extras_require={
         'dev': [
