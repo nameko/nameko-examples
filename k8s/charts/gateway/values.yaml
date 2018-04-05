@@ -1,0 +1,5 @@
+replicaCount: 1
+image:
+  tag: latest
+ingressPort: 80
+servicePort: 8000

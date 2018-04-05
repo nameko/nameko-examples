@@ -23,6 +23,13 @@ services:
     image: redis
     ports:
         - "6380:6379" # Exposing Redis on different port for convenience
+    command: [
+      "bash", "-c",
+      '
+       docker-entrypoint.sh
+       --requirepass password
+      '
+    ]
     restart: always
 
   orders:
@@ -62,6 +69,7 @@ services:
         REDIS_HOST: "redis"
         REDIS_PORT: "6379"
         REDIS_INDEX: "11"
+        REDIS_PASSWORD: "password"
         RABBIT_PASSWORD: "guest"
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"

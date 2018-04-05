@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Orders Service Kubernetes Chart
+name: orders
+version: 0.1.0
