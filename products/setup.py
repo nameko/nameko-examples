@@ -9,7 +9,7 @@ setup(
     packages=find_packages(exclude=['test', 'test.*']),
     py_modules=['products'],
     install_requires=[
-        "marshmallow==2.9.1",
+        "marshmallow==2.15.1",
         "nameko==2.8.5",
         "redis==2.10.5",
     ],

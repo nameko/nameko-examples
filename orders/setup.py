@@ -10,7 +10,7 @@ setup(
         'nameko==2.8.5',
         'nameko-sqlalchemy==0.0.4',
         'alembic==0.8.7',
-        'marshmallow==2.9.1',
+        'marshmallow==2.15.1',
         'psycopg2==2.7.4',
     ],
     extras_require={
