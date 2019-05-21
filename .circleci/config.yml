@@ -10,16 +10,16 @@ jobs:
       - checkout
 
       - run:
-          name: install dependencies
+          name: Install Dependencies
           command: |
             sudo pip install -U pip wheel setuptools
             sudo pip install -U orders/[dev] products/[dev] gateway/[dev]
 
       -  run:
-          name: run tests
+          name: Run Tests
           command: |
             mkdir /tmp/coverage-html
-            HTMLCOV_DIR=/tmp/coverage-html make coverage
+            ARGS=--disable-warnings HTMLCOV_DIR=/tmp/coverage-html make coverage
 
       - store_artifacts:
           path: /tmp/coverage-html
