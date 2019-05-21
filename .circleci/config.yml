@@ -3,8 +3,8 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.7.3-stretch
-      - image: rabbitmq:3.7-management-alpine
-      - image: redis:5.0.5-alpine
+      - image: rabbitmq:3.7-management
+      - image: redis:5-stretch
 
     steps:
       - checkout
