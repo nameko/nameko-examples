@@ -1,0 +1,32 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.7.3-stretch
+      - image: rabbitmq:3.7-management-alpine
+      - image: redis:5.0.5-alpine
+
+    steps:
+      - checkout
+
+      - run:
+          name: install dependencies
+          command: |
+            sudo pip install -U pip wheel setuptools
+            sudo pip install -U orders/[dev] products/[dev] gateway/[dev]
+
+      -  run:
+          name: run tests
+          command: |
+            mkdir /tmp/coverage-html
+            HTMLCOV_DIR=/tmp/coverage-html make coverage
+
+      - store_artifacts:
+          path: /tmp/coverage-html
+          destination: coverage-html
+
+workflows:
+  version: 2
+  main-workflow:
+    jobs:
+      - test
