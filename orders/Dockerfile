@@ -1,0 +1,40 @@
+FROM nameko-example-builder AS wheels
+
+COPY . /application
+
+RUN . /appenv/bin/activate; \
+    cd /application; \
+    pip wheel .
+
+# ------------------------------------------------------------------------
+
+FROM nameko-example-base AS install
+
+COPY --from=wheels /application/wheelhouse /wheelhouse
+
+RUN . /appenv/bin/activate && \
+    pip install --no-index -f /wheelhouse nameko_examples_orders
+
+# ------------------------------------------------------------------------
+
+FROM nameko-example-base AS service
+
+COPY --from=install /appenv /appenv
+
+ADD wheelhouse /var/nameko/wheelhouse
+
+COPY config.yml /var/nameko/config.yml
+COPY run.sh /var/nameko/run.sh
+COPY alembic.ini /var/nameko/alembic.ini
+ADD alembic /var/nameko/alembic
+
+RUN chmod +x /var/nameko/run.sh
+
+USER nameko
+
+WORKDIR /var/nameko/
+
+EXPOSE 8000
+
+CMD . /appenv/bin/activate; \
+    /var/nameko/run.sh;

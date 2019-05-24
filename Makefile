@@ -1,6 +1,6 @@
 HTMLCOV_DIR ?= htmlcov
 
-IMAGES := orders products gateway
+IMAGES := orders # orders products gateway
 
 # test
 
@@ -21,15 +21,15 @@ coverage: test coverage-report coverage-html
 # docker
 
 build-example-base:
-	docker build -t nameko-example-base -f docker/docker.base .;
+	docker build --target base -t nameko-example-base -f docker/base.docker .;
 
 build-wheel-builder: build-example-base
-	docker build -t nameko-example-builder -f docker/docker.build .;
+	docker build --target build -t nameko-example-builder -f docker/base.docker .;
 
-run-wheel-builder: build-wheel-builder
-	for image in $(IMAGES) ; do make -C $$image run-wheel-builder; done
+# run-wheel-builder: build-wheel-builder
+# 	for image in $(IMAGES) ; do make -C $$image run-wheel-builder; done
 
-build-images: run-wheel-builder
+build-images: build-wheel-builder
 	for image in $(IMAGES) ; do make -C $$image build-image; done
 
 build: build-images
