@@ -9,8 +9,8 @@ from products.service import ProductsService
 
 
 @pytest.fixture
-def service_container(config, container_factory):
-    container = container_factory(ProductsService, config)
+def service_container(test_config, container_factory):
+    container = container_factory(ProductsService)
     container.start()
     return container
 
@@ -127,10 +127,10 @@ def test_create_product_validation_error_on_non_nullable_fields(
 
 
 def test_handle_order_created(
-    config, products, redis_client, service_container
+    test_config, products, redis_client, service_container
 ):
 
-    dispatch = event_dispatcher(config)
+    dispatch = event_dispatcher()
 
     payload = {
         'order': {

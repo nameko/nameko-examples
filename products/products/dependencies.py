@@ -1,3 +1,4 @@
+from nameko import config
 from nameko.extensions import DependencyProvider
 import redis
 
@@ -60,8 +61,7 @@ class StorageWrapper:
 class Storage(DependencyProvider):
 
     def setup(self):
-        self.client = redis.StrictRedis.from_url(
-            self.container.config.get(REDIS_URI_KEY))
+        self.client = redis.StrictRedis.from_url(config.get(REDIS_URI_KEY))
 
     def get_dependency(self, worker_ctx):
         return StorageWrapper(self.client)
