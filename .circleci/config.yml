@@ -48,6 +48,7 @@ jobs:
       - image: circleci/python:3.7.3-stretch
 
     steps:
+      - checkout
       - setup_remote_docker
 
       - attach_workspace:
