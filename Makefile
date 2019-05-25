@@ -1,6 +1,6 @@
 HTMLCOV_DIR ?= htmlcov
 
-IMAGES := orders # orders products gateway
+IMAGES := gateway # orders products gateway
 
 # test
 

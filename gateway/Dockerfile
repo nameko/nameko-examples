@@ -13,18 +13,14 @@ FROM nameko-example-base AS install
 COPY --from=wheels /application/wheelhouse /wheelhouse
 
 RUN . /appenv/bin/activate && \
-    pip install --no-index -f /wheelhouse nameko_examples_orders
+    pip install --no-index -f /wheelhouse nameko_examples_gateway
 
 # ------------------------------------------------------------------------
 
-FROM nameko-example-base AS service
-
-COPY --from=install /appenv /appenv
+FROM nameko-example-base
 
 COPY config.yml /var/nameko/config.yml
 COPY run.sh /var/nameko/run.sh
-COPY alembic.ini /var/nameko/alembic.ini
-ADD alembic /var/nameko/alembic
 
 RUN chmod +x /var/nameko/run.sh
 
