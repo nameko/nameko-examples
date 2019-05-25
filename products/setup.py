@@ -9,15 +9,15 @@ setup(
     packages=find_packages(exclude=['test', 'test.*']),
     py_modules=['products'],
     install_requires=[
-        "marshmallow==2.15.1",
-        "nameko==2.8.5",
-        "redis==2.10.5",
+        "marshmallow==2.19.2",
+        "nameko==v3.0.0-rc6",
+        "redis==3.2.1",
     ],
     extras_require={
         'dev': [
-            'pytest==3.1.1',
-            'coverage==4.4.1',
-            'flake8==3.3.0'
+            'pytest==4.5.0',
+            'coverage==4.5.3',
+            'flake8==3.7.7',
         ]
     },
     zip_safe=True,

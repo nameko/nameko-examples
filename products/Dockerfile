@@ -19,6 +19,8 @@ RUN . /appenv/bin/activate && \
 
 FROM nameko-example-base AS service
 
+COPY --from=install /appenv /appenv
+
 COPY config.yml /var/nameko/config.yml
 COPY run.sh /var/nameko/run.sh
 

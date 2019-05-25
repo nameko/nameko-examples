@@ -2,6 +2,11 @@ HTMLCOV_DIR ?= htmlcov
 
 IMAGES := orders products gateway
 
+install-dependencies:
+	pip install -U -e "orders/.[dev]"
+	pip install -U -e "products/.[dev]"
+	pip install -U -e "gateway/.[dev]"
+
 # test
 
 coverage-html:
@@ -22,6 +27,7 @@ coverage: test coverage-report coverage-html
 
 build-base:
 	docker build --target base -t nameko-example-base .;
+	docker build --target builder -t nameko-example-builder .;
 
 build: build-base
 	for image in $(IMAGES) ; do make -C $$image build-image; done

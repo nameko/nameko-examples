@@ -1,7 +1,7 @@
 FROM python:3.7-slim-stretch as base
 
 RUN apt-get update && \
-    apt-get install --yes curl
+    apt-get install --yes curl netcat
 
 RUN pip3 install --upgrade pip
 RUN pip3 install virtualenv
@@ -16,11 +16,11 @@ RUN mkdir /var/nameko/ && chown -R nameko:nameko /var/nameko/
 
 # ------------------------------------------------------------------------
 
-FROM nameko-example-base as build
+FROM nameko-example-base as builder
 
 RUN apt-get update && \
     apt-get install --yes build-essential autoconf libtool pkg-config \
-    libgflags-dev libgtest-dev clang libc++-dev automake git python-psycopg2 libpq-dev
+    libgflags-dev libgtest-dev clang libc++-dev automake git libpq-dev
 
 RUN . /appenv/bin/activate; \
     pip install auditwheel
