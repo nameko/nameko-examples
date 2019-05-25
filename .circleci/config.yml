@@ -58,16 +58,18 @@ jobs:
           command: |
             make docker-login
             make docker-load
-            FROM_TAG=test TAG=latest make docker-tag
-            TAG=latest make push-images
+            FROM_TAG=test TAG=test2 make docker-tag
+            TAG=test2 make push-images
 
 workflows:
   version: 2
   main-workflow:
     jobs:
       - test
-      - build_images
-      - push-images
+      - build_images:
+          requires:
+            - test
+      - push-images:
           filters:
             branches:
-              only: master
+              only: refresh
