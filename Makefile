@@ -21,7 +21,7 @@ coverage: test coverage-report coverage-html
 # docker
 
 build-base:
-	docker build --target base -t nameko-example-base -f docker/base.docker .;
+	docker build --target base -t nameko-example-base .;
 
 build: build-base
 	for image in $(IMAGES) ; do make -C $$image build-image; done
