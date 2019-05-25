@@ -36,8 +36,30 @@ jobs:
       - run:
           name:  Build Docker Images
           command: |
+            TAG=test make build docker-save
+
+      - persist_to_workspace:
+            root: docker-images
+            paths:
+              - examples.tar
+
+  push-images:
+    docker:
+      - image: circleci/python:3.7.3-stretch
+
+    steps:
+      - setup_remote_docker
+
+      - attach_workspace:
+          at: docker-images
+
+      - run:
+          name: Push Docker Images
+          command: |
             make docker-login
-            TAG=test make push-images
+            make docker-load
+            FROM_TAG=test TAG=latest make docker-tag
+            TAG=latest make push-images
 
 workflows:
   version: 2
@@ -45,3 +67,7 @@ workflows:
     jobs:
       - test
       - build_images
+      - push-images
+          filters:
+            branches:
+              only: master
