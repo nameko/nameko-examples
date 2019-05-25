@@ -70,6 +70,8 @@ workflows:
           requires:
             - test
       - push-images:
+          requires:
+            - build_images
           filters:
             branches:
               only: refresh
