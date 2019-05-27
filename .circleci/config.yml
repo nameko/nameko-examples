@@ -1,0 +1,78 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.7.3-stretch
+      - image: rabbitmq:3.7-management
+      - image: redis:5-stretch
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo pip install -U pip wheel setuptools
+            sudo pip install -U orders/[dev] products/[dev] gateway/[dev]
+
+      -  run:
+          name: Run Tests
+          command: |
+            mkdir /tmp/coverage-html
+            ARGS=--disable-warnings HTMLCOV_DIR=/tmp/coverage-html make coverage
+
+      - store_artifacts:
+          path: /tmp/coverage-html
+          destination: coverage-html
+
+  build_images:
+    docker:
+      - image: circleci/python:3.7.3-stretch
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name:  Build Docker Images
+          command: |
+            TAG=test make build docker-save
+
+      - persist_to_workspace:
+            root: docker-images
+            paths:
+              - examples.tar
+
+  push-images:
+    docker:
+      - image: circleci/python:3.7.3-stretch
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - attach_workspace:
+          at: docker-images
+
+      - run:
+          name: Push Docker Images
+          command: |
+            make docker-login
+            make docker-load
+            FROM_TAG=test TAG=latest make docker-tag
+            TAG=latest make push-images
+
+workflows:
+  version: 2
+  main-workflow:
+    jobs:
+      - test
+      - build_images:
+          requires:
+            - test
+      - push-images:
+          requires:
+            - build_images
+          filters:
+            branches:
+              only: master

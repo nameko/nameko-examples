@@ -21,21 +21,22 @@
 import pytest
 from collections import namedtuple
 
+from nameko import config
 from nameko.testing.services import replace_dependencies
 
 from gateway.service import GatewayService
 
 
-@pytest.fixture
-def config(web_config, rabbit_config):
-    gateway_config = rabbit_config.copy()
-    gateway_config.update(web_config)
-    gateway_config['PRODUCT_IMAGE_ROOT'] = 'http://example.com/airship/images'
-    return gateway_config
+@pytest.yield_fixture
+def test_config(web_config, rabbit_config):
+    with config.patch(
+        {'PRODUCT_IMAGE_ROOT': 'http://example.com/airship/images'}
+    ):
+        yield
 
 
 @pytest.fixture
-def create_service_meta(container_factory, config):
+def create_service_meta(container_factory, test_config):
     """ Returns a convenience method for creating service test instance
 
     `container_factory` is a Nameko's test fixture
@@ -60,7 +61,7 @@ def create_service_meta(container_factory, config):
         ServiceMeta = namedtuple(
             'ServiceMeta', ['container'] + dependency_names
         )
-        container = container_factory(GatewayService, config)
+        container = container_factory(GatewayService)
 
         mocked_dependencies = replace_dependencies(
             container, *dependencies, **dependency_map

@@ -1,11 +1,12 @@
 import pytest
 from mock import Mock
 
+from nameko import config
 from products.dependencies import Storage
 
 
 @pytest.fixture
-def storage(config):
+def storage(test_config):
     provider = Storage()
     provider.container = Mock(config=config)
     provider.setup()

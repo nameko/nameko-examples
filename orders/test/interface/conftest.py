@@ -21,6 +21,7 @@
 import pytest
 from collections import namedtuple
 
+from nameko import config
 from nameko.standalone.rpc import ServiceRpcProxy
 from nameko.testing.services import replace_dependencies
 
@@ -28,14 +29,13 @@ from orders.service import OrdersService
 
 
 @pytest.fixture
-def config(rabbit_config, db_url):
-    orders_config = rabbit_config.copy()
-    orders_config['DB_URIS'] = {'orders:Base': db_url}
-    return orders_config
+def test_config(rabbit_config, db_url):
+    with config.patch({'DB_URIS': {'orders:Base': db_url}}):
+        yield
 
 
 @pytest.fixture
-def create_service_meta(container_factory, config):
+def create_service_meta(container_factory, test_config):
     """ Returns a convenience method for creating service test instance
 
     `container_factory` is a Nameko's test fixture
@@ -60,7 +60,7 @@ def create_service_meta(container_factory, config):
         ServiceMeta = namedtuple(
             'ServiceMeta', ['container'] + dependency_names
         )
-        container = container_factory(OrdersService, config)
+        container = container_factory(OrdersService)
 
         mocked_dependencies = replace_dependencies(
             container, *dependencies, **dependency_map
@@ -83,7 +83,7 @@ def orders_service(create_service_meta):
 
 
 @pytest.fixture
-def orders_rpc(config, orders_service):
+def orders_rpc(orders_service):
     """ Fixture used for triggering real RPC entrypoints on Orders service """
-    with ServiceRpcProxy('orders', config) as proxy:
+    with ServiceRpcProxy('orders') as proxy:
         yield proxy

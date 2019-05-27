@@ -1,6 +1,11 @@
 HTMLCOV_DIR ?= htmlcov
-
+TAG ?= dev
 IMAGES := orders products gateway
+
+install-dependencies:
+	pip install -U -e "orders/.[dev]"
+	pip install -U -e "products/.[dev]"
+	pip install -U -e "gateway/.[dev]"
 
 # test
 
@@ -20,22 +25,25 @@ coverage: test coverage-report coverage-html
 
 # docker
 
-build-example-base:
-	docker build -t nameko-example-base -f docker/docker.base .;
+build-base:
+	docker build --target base -t nameko-example-base .;
+	docker build --target builder -t nameko-example-builder .;
 
-build-wheel-builder: build-example-base
-	docker build -t nameko-example-builder -f docker/docker.build .;
+build: build-base
+	for image in $(IMAGES) ; do TAG=$(TAG) make -C $$image build-image; done
 
-run-wheel-builder: build-wheel-builder
-	for image in $(IMAGES) ; do make -C $$image run-wheel-builder; done
+docker-save:
+	mkdir -p docker-images
+	docker save -o docker-images/examples.tar $(foreach image,$(IMAGES),nameko/nameko-example-$(image):$(TAG))
 
-build-images: run-wheel-builder
-	for image in $(IMAGES) ; do make -C $$image build-image; done
+docker-load:
+	docker load -i docker-images/examples.tar
 
-build: build-images
+docker-tag:
+	for image in $(IMAGES) ; do make -C $$image docker-tag; done
 
 docker-login:
-	@docker login --email=$(DOCKER_EMAIL) --password=$(DOCKER_PASSWORD) --username=$(DOCKER_USERNAME)
+	docker login --password=$(DOCKER_PASSWORD) --username=$(DOCKER_USERNAME)
 
-push-images: build
+push-images:
 	for image in $(IMAGES) ; do make -C $$image push-image; done

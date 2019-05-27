@@ -1,23 +1,20 @@
 import pytest
 import redis
 
+from nameko import config
 from products.dependencies import REDIS_URI_KEY
 
 
 @pytest.fixture
-def redis_config():
-    return {REDIS_URI_KEY: 'redis://localhost:6379/11'}
-
-
-@pytest.fixture
-def config(rabbit_config, redis_config):
-    config = rabbit_config.copy()
-    config.update(redis_config)
-    return config
+def test_config(rabbit_config):
+    with config.patch(
+        {REDIS_URI_KEY: 'redis://localhost:6379/11'}
+    ):
+        yield
 
 
 @pytest.yield_fixture
-def redis_client(config):
+def redis_client(test_config):
     client = redis.StrictRedis.from_url(config.get(REDIS_URI_KEY))
     yield client
     client.flushdb()

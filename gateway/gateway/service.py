@@ -1,11 +1,11 @@
 import json
 
 from marshmallow import ValidationError
+from nameko import config
 from nameko.exceptions import BadRequest
 from nameko.rpc import RpcProxy
 from werkzeug import Response
 
-from gateway.dependencies import Config
 from gateway.entrypoints import http
 from gateway.exceptions import OrderNotFound, ProductNotFound
 from gateway.schemas import CreateOrderSchema, GetOrderSchema, ProductSchema
@@ -18,7 +18,6 @@ class GatewayService(object):
 
     name = 'gateway'
 
-    config = Config()
     orders_rpc = RpcProxy('orders')
     products_rpc = RpcProxy('products')
 
@@ -98,7 +97,7 @@ class GatewayService(object):
         product_map = {prod['id']: prod for prod in self.products_rpc.list()}
 
         # get the configured image root
-        image_root = self.config['PRODUCT_IMAGE_ROOT']
+        image_root = config['PRODUCT_IMAGE_ROOT']
 
         # Enhance order details with product and image details.
         for item in order['order_details']:
