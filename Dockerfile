@@ -8,7 +8,7 @@ RUN pip3 install virtualenv
 
 RUN virtualenv -p python3 /appenv
 
-RUN . /appenv/bin/activate; pip install -U pip
+ENV PATH=/appenv/bin:$PATH
 
 RUN groupadd -r nameko && useradd -r -g nameko nameko
 
@@ -22,8 +22,7 @@ RUN apt-get update && \
     apt-get install --yes build-essential autoconf libtool pkg-config \
     libgflags-dev libgtest-dev clang libc++-dev automake git libpq-dev
 
-RUN . /appenv/bin/activate; \
-    pip install auditwheel
+RUN pip install auditwheel
 
 COPY . /application
 

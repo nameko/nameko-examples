@@ -30,7 +30,7 @@ build-base:
 	docker build --target builder -t nameko-example-builder .;
 
 build: build-base
-	for image in $(IMAGES) ; do make -C $$image build-image; done
+	for image in $(IMAGES) ; do TAG=$(TAG) make -C $$image build-image; done
 
 docker-save:
 	mkdir -p docker-images

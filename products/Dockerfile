@@ -2,9 +2,7 @@ FROM nameko-example-builder AS wheels
 
 COPY . /application
 
-RUN . /appenv/bin/activate; \
-    cd /application; \
-    pip wheel .
+RUN cd /application && pip wheel .
 
 # ------------------------------------------------------------------------
 
@@ -12,8 +10,7 @@ FROM nameko-example-base AS install
 
 COPY --from=wheels /application/wheelhouse /wheelhouse
 
-RUN . /appenv/bin/activate && \
-    pip install --no-index -f /wheelhouse nameko_examples_products
+RUN pip install --no-index -f /wheelhouse nameko_examples_products
 
 # ------------------------------------------------------------------------
 
@@ -32,5 +29,4 @@ WORKDIR /var/nameko/
 
 EXPOSE 8000
 
-CMD . /appenv/bin/activate; \
-    /var/nameko/run.sh;
+CMD /var/nameko/run.sh;
