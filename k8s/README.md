@@ -96,7 +96,7 @@ Run these commands one by one:
 ```sh
 $ helm --kube-context=minikube install --name broker  --namespace examples stable/rabbitmq
 
-$ helm --kube-context=minikube install --name db --namespace examples stable/postgresql --set postgresDatabase=orders
+$ helm --kube-context=minikube install --name db --namespace examples stable/postgresql --set postgresqlDatabase=orders
 
 $ helm --kube-context=minikube install --name cache  --namespace examples stable/redis
 ```
@@ -183,7 +183,7 @@ spec:
         name: {{ .Chart.Name }}
         env:
           - name: REDIS_HOST
-            value: cache-redis
+            value: cache-redis-master
           - name: REDIS_INDEX
             value: "11"
           - name: REDIS_PORT

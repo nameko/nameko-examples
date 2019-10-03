@@ -21,7 +21,7 @@ spec:
         name: {{ .Chart.Name }}
         env:
           - name: REDIS_HOST
-            value: cache-redis
+            value: cache-redis-master
           - name: REDIS_INDEX
             value: "11"
           - name: REDIS_PORT

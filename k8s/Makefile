@@ -7,6 +7,30 @@ deploy-namespace:
 
 # helm
 
+deploy-dependencies:
+	# helm upgrade broker stable/rabbitmq --install \
+	# --namespace $(NAMESPACE) --kube-context=$(CONTEXT)
+	helm upgrade db stable/postgresql --install \
+	--set postgresqlDatabase=orders \
+	--namespace $(NAMESPACE) --kube-context=$(CONTEXT)
+	# helm upgrade cache stable/redis --install \
+	# --namespace $(NAMESPACE) --kube-context=$(CONTEXT)
+
+install-charts:
+	$(MAKE) SERVICE_NAME=gateway install-chart
+	$(MAKE) SERVICE_NAME=orders install-chart
+	$(MAKE) SERVICE_NAME=products install-chart
+
+test-charts:
+	$(MAKE) SERVICE_NAME=gateway test-chart
+	$(MAKE) SERVICE_NAME=orders test-chart
+	$(MAKE) SERVICE_NAME=products test-chart
+
+lint-charts:
+	$(MAKE) SERVICE_NAME=gateway lint-chart
+	$(MAKE) SERVICE_NAME=orders lint-chart
+	$(MAKE) SERVICE_NAME=products lint-chart
+
 test-chart:
 	helm upgrade $(SERVICE_NAME) charts/$(SERVICE_NAME) --install \
 	--namespace=$(NAMESPACE) --kube-context $(CONTEXT) \
@@ -19,30 +43,3 @@ install-chart:
 
 lint-chart:
 	helm lint charts/$(SERVICE_NAME) --strict
-
-test-gateway: SERVICE_NAME=gateway
-test-gateway: test-chart
-
-test-orders: SERVICE_NAME=orders
-test-orders: test-chart
-
-test-products: SERVICE_NAME=products
-test-products: test-chart
-
-install-gateway: SERVICE_NAME=gateway
-install-gateway: install-chart
-
-install-orders: SERVICE_NAME=orders
-install-orders: install-chart
-
-install-products: SERVICE_NAME=products
-install-products: install-chart
-
-lint-gateway: SERVICE_NAME=gateway
-lint-gateway: lint-chart
-
-lint-orders: SERVICE_NAME=orders
-lint-orders: lint-chart
-
-lint-products: SERVICE_NAME=products
-lint-products: lint-chart
