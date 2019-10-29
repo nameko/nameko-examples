@@ -8,13 +8,13 @@ deploy-namespace:
 # helm
 
 deploy-dependencies:
-	# helm upgrade broker stable/rabbitmq --install \
-	# --namespace $(NAMESPACE) --kube-context=$(CONTEXT)
+	helm upgrade broker stable/rabbitmq --install \
+	--namespace $(NAMESPACE) --kube-context=$(CONTEXT)
 	helm upgrade db stable/postgresql --install \
 	--set postgresqlDatabase=orders \
 	--namespace $(NAMESPACE) --kube-context=$(CONTEXT)
-	# helm upgrade cache stable/redis --install \
-	# --namespace $(NAMESPACE) --kube-context=$(CONTEXT)
+	helm upgrade cache stable/redis --install \
+	--namespace $(NAMESPACE) --kube-context=$(CONTEXT)
 
 install-charts:
 	$(MAKE) SERVICE_NAME=gateway install-chart

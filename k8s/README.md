@@ -5,7 +5,7 @@
 In this example we'll use local [minikube](https://github.com/kubernetes/minikube)
 Kubernetes cluster hosted on VirtualBox along with community maintained Helm Charts to deploy all 3rd party services. We will also create a set of Helm Charts for Nameko Example Services from this repository.  
 
-Tested with Kubernetes v1.8.
+Tested with Kubernetes v1.14.7
 
 ## Prerequisites
 
@@ -85,8 +85,8 @@ Let’s verify that Helm client can talk to Tiller server
 ```sh
 $ helm version --kube-context=minikube
 
-Client: &version.Version{SemVer:"v2.7.0", GitCommit:"08c...ba4", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.7.0", GitCommit:"08c...ba4", GitTreeState:"clean"}
+Client: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"clean"}
 ```
 
 ### Deploy RabbitMQ, PostgreSQL and Redis
@@ -109,9 +109,10 @@ Verify all pods are running:
 $ kubectl --context=minikube --namespace=examples get pods
 
 NAME                               READY     STATUS    RESTARTS   AGE
-broker-rabbitmq-6c8d7c4554-8nklq   1/1       Running   0          22m
-cache-redis-6cbfd95f66-vlkn5       1/1       Running   0          22m
-db-postgresql-67f5c64dc4-8s9vf     1/1       Running   0          49s
+broker-rabbitmq-0                   1/1       Running   0          49s
+cache-redis-master-0                1/1       Running   0          49s
+cache-redis-slave-79fc9cc57-s52gw   1/1       Running   0          49s
+db-postgresql-0                     1/1       Running   0          49s
 ```
 
 There is a known bug with minikube version: v0.24.1 and bounding persistent volumes.
