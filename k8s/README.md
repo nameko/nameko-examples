@@ -2,8 +2,9 @@
 
 ![Nameko loves Kubernetes](nameko-k8s.png)
 
-In this example we'll use local [minikube](https://github.com/kubernetes/minikube)
-Kubernetes cluster hosted on VirtualBox along with community maintained Helm Charts to deploy all 3rd party services. We will also create a set of Helm Charts for Nameko Example Services from this repository.  
+In this example we'll use local Kubernetes cluster installed with [docker-for-desktop](https://docs.docker.com/docker-for-mac/)
+ along with community maintained Helm Charts to deploy all 3rd party services. 
+ We will also create a set of Helm Charts for Nameko Example Services from this repository.  
 
 Tested with Kubernetes v1.14.7
 
@@ -11,47 +12,22 @@ Tested with Kubernetes v1.14.7
 
 Please make sure these are installed and working
 
-* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-* [Minikube](https://github.com/kubernetes/minikube#installation)
+* [docker-for-desktop](https://docs.docker.com/docker-for-mac/) with Kubernetes enabled
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - should be installed and configured during docker-for-desktop installation
 * [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 
-## Create Kubernetes Cluster
-
-Start (create) Minikube:
+Verify our Kubernetes cluster us up and running:
 
 ```sh
-$ minikube start --vm-driver=virtualbox
+$ kubectl --context=docker-desktop get nodes
 
-Starting local Kubernetes v1.8.0 cluster...
-Starting VM...
-Getting VM IP address...
-Moving files into cluster...
-Setting up certs...
-Connecting to cluster...
-Setting up kubeconfig...
-Starting cluster components...
-Kubectl is now configured to use the cluster.
-Loading cached images from config file.
+NAME             STATUS   ROLES    AGE   VERSION
+docker-desktop   Ready    master   54m   v1.14.7
 ```
-
-Verify cluster:
-
-```sh
-$ kubectl --context=minikube get nodes
-
-NAME       STATUS    ROLES     AGE       VERSION
-minikube   Ready     <none>    3m        v1.8.0
-```
-
-Minikube comes with Kubernetes Dashboard addon turned on. You can use it to poke around the cluster. Any information that you can see via dashboard can be as easily obtained with `kubectl` command.  
-
-Start dashboard:  
-`$ minikube dashboard`
 
 ## Create Namespace
 
-It’s a good practice to create a namespaces where all of our services will live:
+It's a good practice to create a namespaces where all of our services will live:
 
 ```yaml
 # namespace.yaml
@@ -62,28 +38,21 @@ metadata:
   name: examples
 ```
 
-`$ kubectl --context=minikube apply -f namespace.yaml`
+```sh
+$ kubectl --context=docker-desktop apply -f namespace.yaml
+
+namespace/examples created
+```
 
 ## Install External Dependencies
 
 Our examples depend on PostgreSQL, Redis and RabbitMQ. 
 The fastest way to install these 3rd party dependencies is to use community maintained [Helm Charts](https://github.com/kubernetes/charts).
 
-Let’s install `Tiller` (Helm’s server-side component)
+Let's verify that Helm client is installed
 
 ```sh
-$ helm init --kube-context=minikube
-
-$HELM_HOME has been configured at /Users/bob/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-Happy Helming!
-```
-
-Let’s verify that Helm client can talk to Tiller server
-
-```sh
-$ helm version --kube-context=minikube
+$ helm version --kube-context=docker-desktop
 
 Client: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"clean"}
 Server: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"clean"}
@@ -94,11 +63,11 @@ Server: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"
 Run these commands one by one:
 
 ```sh
-$ helm --kube-context=minikube install --name broker  --namespace examples stable/rabbitmq
+$ helm --kube-context=docker-desktop install --name broker  --namespace examples stable/rabbitmq
 
-$ helm --kube-context=minikube install --name db --namespace examples stable/postgresql --set postgresqlDatabase=orders
+$ helm --kube-context=docker-desktop install --name db --namespace examples stable/postgresql --set postgresqlDatabase=orders
 
-$ helm --kube-context=minikube install --name cache  --namespace examples stable/redis
+$ helm --kube-context=docker-desktop install --name cache  --namespace examples stable/redis
 ```
 
 RabbitMQ, PostgreSQL and Redis are now installed along with persistent volumes, kubernetes services, config maps and any secrets required a.k.a. `Amazing™`!
@@ -106,7 +75,7 @@ RabbitMQ, PostgreSQL and Redis are now installed along with persistent volumes, 
 Verify all pods are running:
 
 ```sh
-$ kubectl --context=minikube --namespace=examples get pods
+$ kubectl --context=docker-desktop --namespace=examples get pods
 
 NAME                               READY     STATUS    RESTARTS   AGE
 broker-rabbitmq-0                   1/1       Running   0          49s
@@ -114,9 +83,6 @@ cache-redis-master-0                1/1       Running   0          49s
 cache-redis-slave-79fc9cc57-s52gw   1/1       Running   0          49s
 db-postgresql-0                     1/1       Running   0          49s
 ```
-
-There is a known bug with minikube version: v0.24.1 and bounding persistent volumes.
-If this has not been addressed when you read this please follow [these steps](https://github.com/kubernetes/minikube/issues/2256#issuecomment-355365620) to fix it.
 
 ## Deploy Example Services
 
@@ -216,15 +182,19 @@ As you can see this template is using values coming from `Chart` and `Values` fi
 Please read [The Chart Template Developer’s Guide](https://docs.helm.sh/chart_template_guide/#the-chart-template-developer-s-guide)
 to learn about creating your own charts.
 
-To route traffic to our gateway service we’ll be using ingress. For ingress to work `Ingress Controller` has to be enabled on our cluster:
+To route traffic to our gateway service we'll be using ingress. For ingress to work `Ingress Controller` has to be enabled on our cluster. Follow instructions form [Ingress Installation docs](https://kubernetes.github.io/ingress-nginx/deploy/):
 
-`$ minikube addons enable ingress`
+```sh
+$ kubectl --context=docker-desktop apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+
+$ kubectl --context=docker-desktop apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml
+```
 
 Let's deploy our `products` chart:
 
 ```sh
 $ helm upgrade products charts/products --install \
-	--namespace=examples --kube-context=minikube \
+	--namespace=examples --kube-context=docker-desktop \
 	--set image.tag=latest
 
 Release "products" does not exist. Installing it now.
@@ -249,14 +219,14 @@ Let's release `orders` and `gateway` services:
 
 ```sh
 $ helm upgrade orders charts/orders --install \
-	--namespace=examples --kube-context=minikube \
+	--namespace=examples --kube-context=docker-desktop \
 	--set image.tag=latest
 
 Release "orders" does not exist. Installing it now.
 (...)
 
 $ helm upgrade gateway charts/gateway --install \
-	--namespace=examples --kube-context=minikube \
+	--namespace=examples --kube-context=docker-desktop \
 	--set image.tag=latest
 
 Release "gateway" does not exist. Installing it now.
@@ -266,46 +236,40 @@ Release "gateway" does not exist. Installing it now.
 Let's list all of our Helm releases:
 
 ```sh
-$ helm --kube-context=minikube list
+$ helm --kube-context=docker-desktop list
 
-NAME    	REVISION	UPDATED                 	STATUS  	CHART           	NAMESPACE
-broker  	1       	Thu Jan 11 16:29:15 2018	DEPLOYED	rabbitmq-0.5.3  	examples
-cache   	1       	Thu Jan 11 16:29:27 2018	DEPLOYED	redis-0.7.1     	examples
-db      	1       	Thu Jan 11 16:51:05 2018	DEPLOYED	postgresql-0.7.1	examples
-gateway 	1       	Thu Jan 11 17:11:52 2018	DEPLOYED	gateway-0.1.0   	examples
-orders  	1       	Thu Jan 11 17:11:37 2018	DEPLOYED	orders-0.1.0    	examples
-products	1       	Thu Jan 11 17:08:51 2018	DEPLOYED	products-0.1.0  	examples
+NAME    	REVISION	UPDATED                 	STATUS  	CHART
+broker  	1       	Tue Oct 29 06:50:26 2019	DEPLOYED	rabbitmq-4.11.1
+cache   	1       	Tue Oct 29 06:50:43 2019	DEPLOYED	redis-6.4.4
+db      	1       	Tue Oct 29 06:50:35 2019	DEPLOYED	postgresql-3.16.1
+gateway 	1       	Tue Oct 29 06:54:09 2019	DEPLOYED	gateway-0.1.0
+orders  	1       	Tue Oct 29 06:54:01 2019	DEPLOYED	orders-0.1.0
+products	1       	Tue Oct 29 06:53:43 2019	DEPLOYED	products-0.1.0
 ```
 
 And again let's verify pods are happily running:
 
 ```sh
-$ kubectl --context=minikube --namespace=examples get pods
+$ kubectl --context=docker-desktop --namespace=examples get pods
 
-NAME                               READY     STATUS    RESTARTS   AGE
-broker-rabbitmq-6c8d7c4554-8nklq   1/1       Running   0          22m
-cache-redis-6cbfd95f66-vlkn5       1/1       Running   0          22m
-db-postgresql-67f5c64dc4-8s9vf     1/1       Running   0          49s
-gateway-cbdff8cf-p5p7m             1/1       Running   0          1m
-orders-7995b49c59-lcwmm            1/1       Running   0          2m
-products-66894ff474-5dd2t          1/1       Running   0          5m
+NAME                                 READY   STATUS    RESTARTS   AGE
+broker-rabbitmq-0                    1/1     Running   0          6m30s
+cache-redis-master-0                 1/1     Running   0          6m13s
+cache-redis-slave-5c59c777bb-r8pml   1/1     Running   0          6m13s
+db-postgresql-0                      1/1     Running   0          6m20s
+gateway-65d67f5dd4-kfbxq             1/1     Running   0          2m47s
+orders-5c6d788d79-d4f8c              1/1     Running   0          2m55s
+products-55bbcf7894-ff5lz            1/1     Running   0          3m13s
 ```
 
 ## Run examples
 
 We can now verify our gateway api is working as expected by executing sample requests found in main README of this repository.
 
-We will replace `localhost:8003` with minikube IP:
-
-```sh
-$ minikube ip
-192.168.99.101
-```
-
 #### Create Product
 
 ```sh
-$ curl -XPOST -d '{"id": "the_odyssey", "title": "The Odyssey", "passenger_capacity": 101, "maximum_speed": 5, "in_stock": 10}' 'http://192.168.99.101/products'
+$ curl -XPOST -d '{"id": "the_odyssey", "title": "The Odyssey", "passenger_capacity": 101, "maximum_speed": 5, "in_stock": 10}' 'http://localhost/products'
 
 {"id": "the_odyssey"}
 ```
@@ -313,7 +277,7 @@ $ curl -XPOST -d '{"id": "the_odyssey", "title": "The Odyssey", "passenger_capac
 #### Get Product
 
 ```sh
-$ curl 'http://192.168.99.101/products/the_odyssey'
+$ curl 'http://localhost/products/the_odyssey'
 
 {
   "id": "the_odyssey",
@@ -326,7 +290,7 @@ $ curl 'http://192.168.99.101/products/the_odyssey'
 #### Create Order
 
 ```sh
-$ curl -XPOST -d '{"order_details": [{"product_id": "the_odyssey", "price": "100000.99", "quantity": 1}]}' 'http://192.168.99.101/orders'
+$ curl -XPOST -d '{"order_details": [{"product_id": "the_odyssey", "price": "100000.99", "quantity": 1}]}' 'http://localhost/orders'
 
 {"id": 1}
 ```
@@ -334,7 +298,7 @@ $ curl -XPOST -d '{"order_details": [{"product_id": "the_odyssey", "price": "100
 #### Get Order
 
 ```sh
-$ curl 'http://192.168.99.101/orders/1'
+$ curl 'http://localhost/orders/1'
 
 {
   "id": 1,

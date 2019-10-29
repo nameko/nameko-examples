@@ -10,4 +10,4 @@ spec:
       paths:
       - backend:
           serviceName: {{ .Chart.Name }}
-          servicePort: {{ .Values.ingressPort }}
+          servicePort: {{ .Values.servicePort }}
