@@ -12,7 +12,7 @@ Tested with Kubernetes v1.14.7
 
 Please make sure these are installed and working
 
-* [docker-for-desktop](https://docs.docker.com/docker-for-mac/) with Kubernetes enabled
+* [docker-for-desktop](https://docs.docker.com/docker-for-mac/) with Kubernetes enabled. Docker Desktop for Mac is used in these examples but any other Kubernetes cluster will work as well.
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - should be installed and configured during docker-for-desktop installation
 * [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 
