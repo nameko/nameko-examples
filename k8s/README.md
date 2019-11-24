@@ -6,7 +6,7 @@ In this example we'll use local Kubernetes cluster installed with [docker-for-de
  along with community maintained Helm Charts to deploy all 3rd party services. 
  We will also create a set of Helm Charts for Nameko Example Services from this repository.  
 
-Tested with Kubernetes v1.14.7
+Tested with Kubernetes v1.14.8
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Verify our Kubernetes cluster us up and running:
 $ kubectl --context=docker-desktop get nodes
 
 NAME             STATUS   ROLES    AGE   VERSION
-docker-desktop   Ready    master   54m   v1.14.7
+docker-desktop   Ready    master   54m   v1.14.8
 ```
 
 ## Create Namespace
@@ -54,8 +54,7 @@ Let's verify that Helm client is installed
 ```sh
 $ helm version --kube-context=docker-desktop
 
-Client: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"clean"}
+version.BuildInfo{Version:"v3.0.0", GitCommit:"e29...8b6", GitTreeState:"clean", GoVersion:"go1.13.4"}
 ```
 
 ### Deploy RabbitMQ, PostgreSQL and Redis
@@ -63,11 +62,11 @@ Server: &version.Version{SemVer:"v2.15.1", GitCommit:"08c...ba4", GitTreeState:"
 Run these commands one by one:
 
 ```sh
-$ helm --kube-context=docker-desktop install --name broker  --namespace examples stable/rabbitmq
+$ helm --kube-context=docker-desktop install broker  --namespace examples stable/rabbitmq
 
-$ helm --kube-context=docker-desktop install --name db --namespace examples stable/postgresql --set postgresqlDatabase=orders
+$ helm --kube-context=docker-desktop install db --namespace examples stable/postgresql --set postgresqlDatabase=orders
 
-$ helm --kube-context=docker-desktop install --name cache  --namespace examples stable/redis
+$ helm --kube-context=docker-desktop install cache  --namespace examples stable/redis
 ```
 
 RabbitMQ, PostgreSQL and Redis are now installed along with persistent volumes, kubernetes services, config maps and any secrets required a.k.a. `Amazing™`!
@@ -236,7 +235,7 @@ Release "gateway" does not exist. Installing it now.
 Let's list all of our Helm releases:
 
 ```sh
-$ helm --kube-context=docker-desktop list
+$ helm --kube-context=docker-desktop list --namespace examples
 
 NAME    	REVISION	UPDATED                 	STATUS  	CHART
 broker  	1       	Tue Oct 29 06:50:26 2019	DEPLOYED	rabbitmq-4.11.1
@@ -255,7 +254,7 @@ $ kubectl --context=docker-desktop --namespace=examples get pods
 NAME                                 READY   STATUS    RESTARTS   AGE
 broker-rabbitmq-0                    1/1     Running   0          6m30s
 cache-redis-master-0                 1/1     Running   0          6m13s
-cache-redis-slave-5c59c777bb-r8pml   1/1     Running   0          6m13s
+cache-redis-slave-0                  1/1     Running   0          6m13s
 db-postgresql-0                      1/1     Running   0          6m20s
 gateway-65d67f5dd4-kfbxq             1/1     Running   0          2m47s
 orders-5c6d788d79-d4f8c              1/1     Running   0          2m55s
